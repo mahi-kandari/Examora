@@ -6,7 +6,7 @@ import { db } from "../services/firebase";
 import { useAuth } from "../contexts/AuthContext";
 import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
-import { MapPinIcon, ClockIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { Camera, FileText, Clock, MapPin, ChevronRight, Sun, CloudSun, Hand } from "lucide-react";
 import relaxingImg from "../assets/relaxing.webp";
 import studyImg from "../assets/study.png";
 
@@ -76,11 +76,11 @@ function getRelativeTimeLabel(dateIso: string): string {
   return target.toLocaleDateString("en-US", { month: "long", year: "numeric" }).toUpperCase();
 }
 
-function getTimeBasedGreeting(): { greeting: string; emoji: string } {
+function getTimeBasedGreeting(): { greeting: string; icon: React.ReactNode } {
   const hour = new Date().getHours();
-  if (hour < 12) return { greeting: "Good morning", emoji: "☀️" };
-  if (hour < 17) return { greeting: "Good afternoon", emoji: "🌤️" };
-  return { greeting: "Good evening", emoji: "👋" };
+  if (hour < 12) return { greeting: "Good morning", icon: <Sun className="w-4 h-4 text-amber-500 inline ml-1" /> };
+  if (hour < 17) return { greeting: "Good afternoon", icon: <CloudSun className="w-4 h-4 text-amber-500 inline ml-1" /> };
+  return { greeting: "Good evening", icon: <Hand className="w-4 h-4 text-amber-500 inline ml-1" /> };
 }
 
 // ---------- Component ----------
@@ -90,7 +90,7 @@ const Home: React.FC = () => {
   const [exams, setExams] = useState<ExamRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { greeting, emoji } = getTimeBasedGreeting();
+  const { greeting, icon: greetingIcon } = getTimeBasedGreeting();
 
   useEffect(() => {
     if (!user) return;
@@ -184,8 +184,8 @@ const Home: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
-              {greeting}, {firstName} {emoji}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
+              {greeting}, {firstName} {greetingIcon}
             </h1>
             <p className="text-muted text-xs mt-0.5 font-medium">
               Your exam schedule is ready to be created.
@@ -217,8 +217,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <Camera className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
             <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
@@ -227,8 +227,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <FileText className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
             <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
@@ -249,8 +249,8 @@ const Home: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
-              {greeting}, {firstName} {emoji}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
+              {greeting}, {firstName} {greetingIcon}
             </h1>
             <p className="text-muted text-xs mt-0.5 font-medium">
               You're all caught up! No upcoming exams.
@@ -281,8 +281,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <Camera className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
             <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
@@ -291,8 +291,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <FileText className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
             <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
@@ -345,8 +345,8 @@ const Home: React.FC = () => {
       {/* 1. HEADER */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
-            {greeting}, {firstName} {emoji}
+          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
+            {greeting}, {firstName} {greetingIcon}
           </h1>
           <p className="text-muted text-xs mt-0.5 font-medium">
             Your exam schedule is looking good.
@@ -378,18 +378,18 @@ const Home: React.FC = () => {
         <div className="space-y-1.5 mb-4">
           {nextExam.reporting_time && (
             <div className="flex items-center gap-2 text-xs text-text-primary">
-              <ClockIcon className="h-4 w-4 text-orange-500 shrink-0" />
+              <Clock className="h-4 w-4 text-orange-500 shrink-0" />
               <span>Reporting: <strong className="text-text-primary font-semibold">{nextExam.reporting_time}</strong></span>
             </div>
           )}
 
           <div className="flex items-center gap-2 text-xs text-muted truncate">
-            <MapPinIcon className="h-4 w-4 text-orange-500 shrink-0" />
+            <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
             <span className="truncate">{getCenterName(nextExam)}</span>
           </div>
         </div>
 
-        {/* Integrated Countdown Box */}
+        {/* Integrated Countdown Box (Without Glowing Dot) */}
         {urgentCountdown && (
           <div className="bg-surface/90 border border-stroke dark:bg-black/40 dark:border-white/10 p-3 rounded-xl flex items-center justify-between gap-2 mb-4 shadow-sm">
             <div>
@@ -400,7 +400,6 @@ const Home: React.FC = () => {
                 {urgentCountdown}
               </p>
             </div>
-            <span className="h-2.5 w-2.5 rounded-full bg-orange-500 animate-ping shrink-0" />
           </div>
         )}
 
@@ -410,11 +409,11 @@ const Home: React.FC = () => {
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
         >
           <span>View Exam Logistics</span>
-          <ChevronRightIcon className="h-4 w-4" />
+          <ChevronRight className="h-4 w-4" />
         </button>
       </div>
 
-      {/* 3. QUICK ACTIONS (Apple-Style Compact Tiles) */}
+      {/* 3. QUICK ACTIONS (Apple-Style Compact Tiles with Vector Icons) */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">
           Quick Actions
@@ -424,8 +423,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <Camera className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
             <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
@@ -434,8 +433,8 @@ const Home: React.FC = () => {
             onClick={() => navigate("/upload")}
             className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-8 w-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <FileText className="w-4 h-4" />
             </div>
             <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
             <p className="text-muted text-[10px] mt-0.5">Auto schedule</p>
@@ -475,14 +474,16 @@ const Home: React.FC = () => {
                         <div className="flex items-center gap-3 text-xs text-muted mt-1">
                           {exam.exam_date && <span>{formatDate(exam.exam_date)}</span>}
                           {exam.reporting_time && (
-                            <span>🕐 {exam.reporting_time}</span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-muted" /> {exam.reporting_time}
+                            </span>
                           )}
                         </div>
-                        <p className="text-xs text-muted truncate mt-0.5">
-                          📍 {getCenterName(exam)}
+                        <p className="text-xs text-muted truncate mt-0.5 flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-muted shrink-0" /> {getCenterName(exam)}
                         </p>
                       </div>
-                      <ChevronRightIcon className="h-5 w-5 text-muted group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
+                      <ChevronRight className="h-5 w-5 text-muted group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
                     </button>
                   ))}
                 </div>
