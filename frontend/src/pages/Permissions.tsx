@@ -1,25 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, MapPin } from "lucide-react";
 import Screen from "../components/Screen";
 
 const STORED_ORIGIN_KEY = "examora_user_origin";
 const STORED_LOCATION_PERMISSION_KEY = "examora_location_permission";
 
 interface PermissionStep {
-  icon: React.ReactNode;
+  icon: string;
   heading: string;
   body: string;
 }
 
 const steps: PermissionStep[] = [
   {
-    icon: <Bell className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
+    icon: "🔔",
     heading: "Turn on notifications",
     body: "Get gentle nudges before deadlines, departure times, and document checklists — timed just right.",
   },
   {
-    icon: <MapPin className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
+    icon: "📍",
     heading: "Share your location",
     body: "We'll estimate travel time to your test centre and tell you exactly when to leave.",
   },
@@ -56,6 +55,8 @@ const Permissions: React.FC = () => {
         advance();
       },
       () => {
+        // Confirmation sends null after a denial and uses the backend's free
+        // safe-departure fallback, so permission never blocks onboarding.
         localStorage.removeItem(STORED_ORIGIN_KEY);
         localStorage.setItem(STORED_LOCATION_PERMISSION_KEY, "denied");
         advance();
@@ -83,9 +84,7 @@ const Permissions: React.FC = () => {
   return (
     <Screen className="flex items-center min-h-screen">
       <div key={index} className="w-full glass p-8 text-center animate-scaleIn">
-        <div className="h-20 w-20 rounded-3xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-6 shadow-md">
-          {step.icon}
-        </div>
+        <div className="text-6xl mb-6 select-none">{step.icon}</div>
         <h2 className="font-display font-semibold text-xl text-text-primary mb-3">
           {step.heading}
         </h2>
@@ -105,9 +104,8 @@ const Permissions: React.FC = () => {
           {steps.map((_, i) => (
             <span
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === index ? "w-6 bg-accent" : "w-1.5 bg-stroke/40"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-6 bg-accent" : "w-1.5 bg-stroke/40"
+                }`}
             />
           ))}
         </div>

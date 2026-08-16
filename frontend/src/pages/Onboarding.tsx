@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, ClipboardList, Bell } from "lucide-react";
 
 interface Slide {
-  icon: React.ReactNode;
+  icon: string;
   heading: string;
   body: string;
   accentLine?: string;
@@ -11,18 +10,18 @@ interface Slide {
 
 const slides: Slide[] = [
   {
-    icon: <Search className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
+    icon: "🔍",
     heading: "Admit cards hide what matters.",
     body: "Gate numbers, dress codes, reporting times — buried in dense text you skim past when it counts most.",
     accentLine: "We find them instantly.",
   },
   {
-    icon: <ClipboardList className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
+    icon: "📋",
     heading: "Upload once. Everything's clear.",
     body: "Scan or upload your admit card and Examora extracts every detail into one clean, readable plan.",
   },
   {
-    icon: <Bell className="w-10 h-10 text-blue-600 dark:text-blue-400" />,
+    icon: "🔔",
     heading: "Reminders that feel reassuring.",
     body: "Personalised nudges for documents, departure time, and the little things you'd hate to forget.",
   },
@@ -58,9 +57,7 @@ const Onboarding: React.FC = () => {
           key={index}
           className="flex-1 flex flex-col items-center justify-center text-center animate-fadeInUp"
         >
-          <div className="h-20 w-20 rounded-3xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-8 shadow-md">
-            {slide.icon}
-          </div>
+          <div className="text-6xl mb-8 select-none">{slide.icon}</div>
           <h2 className="font-display font-semibold text-2xl leading-snug text-text-primary mb-4">
             {slide.heading}
           </h2>
@@ -78,9 +75,8 @@ const Onboarding: React.FC = () => {
           {slides.map((_, i) => (
             <span
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === index ? "w-6 bg-accent" : "w-1.5 bg-stroke/40"
-              }`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-6 bg-accent" : "w-1.5 bg-stroke/40"
+                }`}
             />
           ))}
         </div>

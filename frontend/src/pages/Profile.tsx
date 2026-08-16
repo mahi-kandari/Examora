@@ -6,7 +6,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { db } from "../services/firebase";
 import Screen from "../components/Screen";
-import { Moon, Sun } from "lucide-react";
 
 const Profile: React.FC = () => {
   // Tell TypeScript that logout is async
@@ -131,14 +130,12 @@ const Profile: React.FC = () => {
               persistProfile({ notificationsEnabled: next });
             }}
             aria-pressed={notificationsEnabled}
-            className={`h-7 w-12 rounded-full relative transition-colors duration-300 ${
-              notificationsEnabled ? "bg-accent" : "bg-stroke/40"
-            }`}
+            className={`h-7 w-12 rounded-full relative transition-colors duration-300 ${notificationsEnabled ? "bg-accent" : "bg-stroke/40"
+              }`}
           >
             <span
-              className={`absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all duration-300 ${
-                notificationsEnabled ? "left-[22px]" : "left-0.5"
-              }`}
+              className={`absolute top-0.5 h-6 w-6 rounded-full bg-white transition-all duration-300 ${notificationsEnabled ? "left-[22px]" : "left-0.5"
+                }`}
             />
           </button>
         </div>
@@ -158,11 +155,10 @@ const Profile: React.FC = () => {
               setReminderIntensity("relaxed");
               persistProfile({ reminderIntensity: "relaxed" });
             }}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-              reminderIntensity === "relaxed"
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${reminderIntensity === "relaxed"
                 ? "bg-accent/20 text-accent"
                 : "text-muted"
-            }`}
+              }`}
           >
             Relaxed
           </button>
@@ -171,11 +167,10 @@ const Profile: React.FC = () => {
               setReminderIntensity("nervous");
               persistProfile({ reminderIntensity: "nervous" });
             }}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-              reminderIntensity === "nervous"
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${reminderIntensity === "nervous"
                 ? "bg-accent/20 text-accent"
                 : "text-muted"
-            }`}
+              }`}
           >
             Nervous
           </button>
@@ -198,23 +193,21 @@ const Profile: React.FC = () => {
         <div className="flex bg-stroke/15 rounded-2xl p-1">
           <button
             onClick={() => setTheme("dark")}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-              theme === "dark"
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${theme === "dark"
                 ? "bg-accent/20 text-accent font-semibold shadow-sm"
                 : "text-muted hover:text-text-primary"
-            }`}
+              }`}
           >
-            <Moon className="w-4 h-4" /> Dark Mode
+            <span>🌙</span> Dark Mode
           </button>
           <button
             onClick={() => setTheme("light")}
-            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-              theme === "light"
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 ${theme === "light"
                 ? "bg-accent/20 text-accent font-semibold shadow-sm"
                 : "text-muted hover:text-text-primary"
-            }`}
+              }`}
           >
-            <Sun className="w-4 h-4" /> Light Mode
+            <span>☀️</span> Light Mode
           </button>
         </div>
       </div>
