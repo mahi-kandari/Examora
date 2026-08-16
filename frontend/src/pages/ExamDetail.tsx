@@ -14,6 +14,7 @@ import { Line } from "react-chartjs-2";
 import { db } from "../services/firebase";
 import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
+import { generateGoogleCalendarUrl, downloadIcsFile } from "../utils/calendar";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -534,6 +535,28 @@ const ExamDetail: React.FC = () => {
         >
           Open in Google Maps
         </a>
+      </div>
+
+      <div className="card mt-4 animate-fadeInUp">
+        <p className="text-xs font-medium text-muted uppercase tracking-wide mb-3">
+          Calendar & Event Sync
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2.5">
+          <a
+            href={generateGoogleCalendarUrl(exam)}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary flex-1 text-center block !py-2.5 text-sm font-medium"
+          >
+            📅 Add to Google Calendar
+          </a>
+          <button
+            onClick={() => downloadIcsFile(exam)}
+            className="btn-ghost flex-1 text-center block !py-2.5 text-sm font-medium"
+          >
+            📥 Export .ics Calendar
+          </button>
+        </div>
       </div>
 
       <div className="card mt-4 animate-fadeInUp">
