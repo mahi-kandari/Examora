@@ -16,6 +16,7 @@ import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
 import { useGeofence } from "../hooks/useGeofence";
 import { generateGoogleCalendarUrl } from "../utils/calendar";
+import { ChronosVisualization } from "../components/ChronosVisualization";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -475,52 +476,13 @@ const ExamDetail: React.FC = () => {
         <p className="text-muted text-sm">Reports at {exam.reporting_time || "N/A"}</p>
       </div>
 
-      <div className="card mt-4 animate-fadeInUp">
-          <p className="text-xs font-medium text-muted uppercase tracking-wide mb-3">
-            Chronos
-          </p>
-          {exam.safe_departure_time && (
-            <>
-              <p className="font-display font-semibold text-text-primary text-[15px]">
-                🚀 Leave Home by {exam.safe_departure_time} Sharp
-              </p>
-              <p className="text-muted text-xs mt-1">
-                Predicted arrival: {exam.predicted_arrival_time} (with 30 min buffer)
-              </p>
-              <p className="font-display text-3xl text-accent tracking-wider mt-3 tabular-nums">
-                {countdown}
-              </p>
-            </>
-          )}
-
-          {isLocationGranted ? (
-            <div className="mt-5">
-              <p className="text-sm font-medium text-text-primary">
-                Estimated travel time by departure time
-              </p>
-              <div className="flex items-center gap-2 flex-wrap mt-3">
-                <span className="text-[11px] font-semibold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/30 flex items-center gap-1.5 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 inline-block animate-pulse"></span>
-                  Departure: {milestones.safeDepStr}
-                </span>
-                <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-                  Reporting: {milestones.reportingStr}
-                </span>
-                <span className="text-[11px] font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/30 flex items-center gap-1.5 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 inline-block animate-pulse"></span>
-                  Gate Closes: {milestones.gateClosingStr}
-                </span>
-              </div>
-              <div className="h-44 mt-4">
-                <Line data={chartData} options={chartOptions} />
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-muted mt-5">
-              Travel time estimates unavailable. Share your location when confirming this exam to enable them.
-            </p>
-          )}
+      <div className="mt-4">
+        <ChronosVisualization
+          exam={exam}
+          milestones={milestones}
+          countdown={countdown}
+          isLocationGranted={isLocationGranted}
+        />
       </div>
 
       <div className="card mt-4 animate-fadeInUp">
