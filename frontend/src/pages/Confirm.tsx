@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { auth, db } from '../services/firebase';
 import { confirmExam } from '../services/exam';
+import { AlertTriangle, MapPin, ChevronDown } from 'lucide-react';
 
 const STORED_ORIGIN_KEY = 'examora_user_origin';
 const STORED_LOCATION_PERMISSION_KEY = 'examora_location_permission';
@@ -249,7 +250,7 @@ const Confirm: React.FC = () => {
 
         {allLowConfidence && (
           <div className="mt-5 rounded-2xl border border-accent/30 bg-accent/5 px-4 py-3 flex items-start gap-3 animate-fadeInUp">
-            <span className="text-lg leading-none">⚠️</span>
+            <AlertTriangle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
             <p className="text-sm text-accent leading-relaxed">
               We had trouble reading this document clearly. Please double-check every field below.
             </p>
@@ -258,7 +259,7 @@ const Confirm: React.FC = () => {
 
         <section className="mt-5 rounded-2xl border border-accent/30 bg-accent/5 p-4">
           <div className="flex gap-3">
-            <span className="text-xl" aria-hidden="true">📍</span>
+            <MapPin className="w-5 h-5 text-accent shrink-0 mt-0.5" />
             <div>
               <h2 className="text-sm font-semibold text-text-primary">Plan your journey</h2>
               <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -302,7 +303,7 @@ const Confirm: React.FC = () => {
                   </label>
                   {isLow && (
                     <span className="text-accent text-xs flex items-center gap-1">
-                      ⚠️ Check this
+                      <AlertTriangle className="w-3.5 h-3.5" /> Check this
                     </span>
                   )}
                 </div>
@@ -323,7 +324,7 @@ const Confirm: React.FC = () => {
           className="w-full mt-5 text-sm text-muted hover:text-text-primary transition-colors flex items-center justify-center gap-2"
         >
           {showRaw ? 'Hide' : 'View'} raw OCR text
-          <span className={`transition-transform ${showRaw ? 'rotate-180' : ''}`}>▾</span>
+          <ChevronDown className={`w-4 h-4 transition-transform ${showRaw ? 'rotate-180' : ''}`} />
         </button>
 
         {showRaw && (

@@ -13,6 +13,7 @@ import { db } from "../services/firebase";
 import { useAuth } from "../contexts/AuthContext";
 import Screen from "../components/Screen";
 import { User } from "firebase/auth";
+import { Inbox } from "lucide-react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 // ---------- Types ----------
@@ -235,7 +236,9 @@ const History: React.FC = () => {
           Your Exams
         </h1>
         <div className="glass p-8 text-center mt-10 animate-fadeInUp">
-          <div className="text-5xl mb-4">📭</div>
+          <div className="h-14 w-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-4">
+            <Inbox className="w-7 h-7" />
+          </div>
           <p className="text-text-primary font-medium mb-2">No exams yet</p>
           <p className="text-muted text-sm mb-6">
             Head to Home to scan your first admit card.

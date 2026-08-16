@@ -1,6 +1,20 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Clock, Navigation, MapPin, Sliders, RotateCcw } from "lucide-react";
+import {
+  Rocket,
+  Flag,
+  Clock,
+  ShieldAlert,
+  FileText,
+  MapPin,
+  Sliders,
+  CheckCircle2,
+  AlertTriangle,
+  RotateCcw,
+  Sparkles,
+  Navigation,
+  Car,
+} from "lucide-react";
 
 interface ResolvedMilestones {
   safeDepStr: string;
@@ -100,8 +114,8 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
     if (simArrivalMin > gateMin) {
       return {
         level: "danger",
-        dotColor: "bg-rose-500",
-        textColor: "text-rose-600 dark:text-rose-400",
+        badgeClass: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30",
+        icon: ShieldAlert,
         label: "Gate Closed — Missed Exam",
         advice: `Arriving at ${simArrivalStr} is after gate closing (${milestones.gateClosingStr})!`,
       };
@@ -109,8 +123,8 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
     if (simBufferMin < 0) {
       return {
         level: "danger",
-        dotColor: "bg-rose-500",
-        textColor: "text-rose-600 dark:text-rose-400",
+        badgeClass: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30",
+        icon: AlertTriangle,
         label: "Late for Reporting",
         advice: `Arriving at ${simArrivalStr} is ${Math.abs(simBufferMin)} mins past reporting time!`,
       };
@@ -118,16 +132,16 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
     if (simBufferMin < 15) {
       return {
         level: "warning",
-        dotColor: "bg-amber-500",
-        textColor: "text-amber-600 dark:text-amber-400",
+        badgeClass: "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/30",
+        icon: AlertTriangle,
         label: `${simBufferMin} min tight buffer`,
         advice: `Leaves only ${simBufferMin} mins buffer before reporting at ${milestones.reportingStr}.`,
       };
     }
     return {
       level: "safe",
-      dotColor: "bg-emerald-500",
-      textColor: "text-emerald-600 dark:text-emerald-400",
+      badgeClass: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30",
+      icon: CheckCircle2,
       label: `${simBufferMin} min safety buffer`,
       advice: `Arrive ${simBufferMin} mins before reporting at ${milestones.reportingStr}.`,
     };
@@ -135,103 +149,149 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
 
   const isRecommended = sliderDepMin === recDepMin;
   const centerTitle = getCenterName(exam);
+  const StatusIcon = riskStatus.icon;
 
   return (
     <div className="card bg-surface/95 dark:bg-[#0A0A0C] border border-stroke/70 dark:border-white/10 p-6 sm:p-8 rounded-3xl space-y-7 shadow-2xl">
       {/* 1. EYEBROW HEADER */}
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <span className="text-[11px] font-bold text-muted uppercase tracking-widest">
-          CHRONOS • EXAM-DAY PLAN
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <span className="text-[11px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+            CHRONOS • EXAM-DAY PLAN
+          </span>
+        </div>
         {countdown && (
-          <div className="flex items-center gap-1.5 text-xs text-muted font-medium">
-            <Clock className="w-3.5 h-3.5 text-accent" />
-            <span>Leaving in <strong className="font-mono font-bold text-text-primary dark:text-white">{countdown}</strong></span>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-white dark:bg-slate-800 text-xs font-semibold shadow-xs">
+            <Clock className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-[10px] text-slate-300 uppercase font-medium">Leaving in</span>
+            <span className="font-mono text-xs font-extrabold text-blue-400 tracking-wider">{countdown}</span>
           </div>
         )}
       </div>
 
       {/* 2. HERO — DOMINANT DEPARTURE TIME */}
       <div className="space-y-2">
-        <p className="text-xs text-muted uppercase tracking-wider font-semibold">
+        <p className="text-xs font-extrabold text-muted uppercase tracking-wider">
           Leave home by
         </p>
         <h1 className="text-5xl sm:text-6xl font-display font-extrabold text-text-primary dark:text-white tracking-tight leading-none">
           {selectedDepStr}
         </h1>
-        <p className="text-sm text-muted font-medium pt-1">
-          {simTravelMin} min journey • Arrive around <strong className="font-bold text-text-primary dark:text-white">{simArrivalStr}</strong>
+        <p className="text-sm font-semibold text-text-primary dark:text-slate-200 pt-1">
+          {simTravelMin} min journey • Arrive around <span className="font-bold text-blue-600 dark:text-blue-400">{simArrivalStr}</span>
         </p>
 
         {/* Location Route Context */}
-        <div className="pt-2 flex items-center gap-2 text-xs text-muted truncate">
-          <Navigation className="w-3.5 h-3.5 text-accent shrink-0" />
-          <span className="font-medium text-text-primary dark:text-white">Home</span>
-          <span className="text-stroke dark:text-white/20">─────────</span>
-          <span className="font-mono text-accent font-semibold">{simTravelMin} min</span>
-          <span className="text-stroke dark:text-white/20">─────────</span>
-          <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-          <span className="truncate font-medium text-text-primary dark:text-white">{centerTitle}</span>
+        <div className="pt-2.5 flex items-center gap-2 text-xs text-muted truncate flex-wrap">
+          <div className="flex items-center gap-1 text-text-primary dark:text-white font-semibold">
+            <Navigation className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+            <span>Home</span>
+          </div>
+          <span className="text-stroke dark:text-white/20">────────</span>
+          <div className="flex items-center gap-1 font-mono text-blue-600 dark:text-blue-400 font-bold bg-blue-500/10 px-2.5 py-0.5 rounded-md border border-blue-500/20">
+            <Car className="w-3 h-3 shrink-0" />
+            <span>{simTravelMin} min</span>
+          </div>
+          <span className="text-stroke dark:text-white/20">────────</span>
+          <div className="flex items-center gap-1 text-text-primary dark:text-white font-semibold truncate">
+            <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <span className="truncate">{centerTitle}</span>
+          </div>
         </div>
       </div>
 
-      {/* 3. SAFETY BUFFER STATUS LINE */}
-      <div className="flex items-center gap-2.5 text-xs font-semibold pt-1">
-        <span className={`h-2.5 w-2.5 rounded-full ${riskStatus.dotColor} shrink-0 animate-pulse`} />
-        <span className={riskStatus.textColor}>{riskStatus.label}</span>
-        <span className="text-muted font-normal">• {riskStatus.advice}</span>
+      {/* 3. SAFETY BUFFER STATUS BADGE */}
+      <div className={`inline-flex items-center gap-2 text-xs font-bold px-3.5 py-1.5 rounded-full border ${riskStatus.badgeClass}`}>
+        <StatusIcon className="w-4 h-4 shrink-0" />
+        <span>{riskStatus.label}</span>
+        <span className="font-medium opacity-80">• {riskStatus.advice}</span>
       </div>
 
-      {/* 4. MINIMAL HORIZONTAL JOURNEY TIMELINE */}
-      <div className="pt-2 border-t border-stroke/60 dark:border-white/10 space-y-3">
-        <p className="text-[11px] font-bold text-muted uppercase tracking-widest">
+      {/* 4. VISUAL TIMELINE WITH ICON AVATAR CARDS */}
+      <div className="pt-3 border-t border-stroke/60 dark:border-white/10 space-y-3">
+        <p className="text-[11px] font-extrabold text-muted uppercase tracking-widest">
           Timeline & Deadlines
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-          {/* Step 1: Leave */}
-          <div className="p-3 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
-            <span className="font-mono text-xs font-bold text-accent">{milestones.safeDepStr}</span>
-            <p className="text-xs font-bold text-text-primary dark:text-white">Leave Home</p>
-            <p className="text-[11px] text-muted">Recommended</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Step 1: Leave Home */}
+          <div className="p-3.5 rounded-2xl bg-surface border border-stroke/70 dark:bg-white/[0.03] dark:border-white/10 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 shrink-0">
+                <Rocket className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-extrabold text-text-primary dark:text-white">Leave Home</p>
+                <p className="text-[10px] text-muted font-medium">Recommended</p>
+              </div>
+            </div>
+            <span className="font-mono text-xs font-extrabold text-blue-600 dark:text-blue-400">{milestones.safeDepStr}</span>
           </div>
 
-          {/* Step 2: Arrive */}
-          <div className="p-3 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
-            <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">{predictedArrivalStr}</span>
-            <p className="text-xs font-bold text-text-primary dark:text-white">Arrive Centre</p>
-            <p className="text-[11px] text-muted">~{baseTravelMin} min travel</p>
+          {/* Step 2: Arrive Centre */}
+          <div className="p-3.5 rounded-2xl bg-surface border border-stroke/70 dark:bg-white/[0.03] dark:border-white/10 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shrink-0">
+                <Flag className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-extrabold text-text-primary dark:text-white">Arrive Centre</p>
+                <p className="text-[10px] text-muted font-medium">~{baseTravelMin} min travel</p>
+              </div>
+            </div>
+            <span className="font-mono text-xs font-extrabold text-emerald-600 dark:text-emerald-400">{predictedArrivalStr}</span>
           </div>
 
-          {/* Step 3: Report */}
-          <div className="p-3 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
-            <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">{milestones.reportingStr}</span>
-            <p className="text-xs font-bold text-text-primary dark:text-white">Reporting Opens</p>
-            <p className="text-[11px] text-muted">Entry & Check-in</p>
+          {/* Step 3: Reporting Opens */}
+          <div className="p-3.5 rounded-2xl bg-surface border border-stroke/70 dark:bg-white/[0.03] dark:border-white/10 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 shrink-0">
+                <FileText className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-extrabold text-text-primary dark:text-white">Reporting Opens</p>
+                <p className="text-[10px] text-muted font-medium">Entry & Check-in</p>
+              </div>
+            </div>
+            <span className="font-mono text-xs font-extrabold text-amber-600 dark:text-amber-400">{milestones.reportingStr}</span>
           </div>
 
           {/* Step 4: Gate Closes */}
-          <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-1">
-            <span className="font-mono text-xs font-bold text-rose-600 dark:text-rose-400">{milestones.gateClosingStr}</span>
-            <p className="text-xs font-bold text-rose-600 dark:text-rose-400">Gate Closes</p>
-            <p className="text-[11px] text-rose-600/80 dark:text-rose-300/80 font-medium">Hard Deadline</p>
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-rose-500/20 text-rose-600 dark:text-rose-400 shrink-0">
+                <ShieldAlert className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-extrabold text-rose-600 dark:text-rose-400">Gate Closes</p>
+                <p className="text-[10px] text-rose-600/80 dark:text-rose-300/80 font-semibold">Hard Deadline</p>
+              </div>
+            </div>
+            <span className="font-mono text-xs font-extrabold text-rose-600 dark:text-rose-400">{milestones.gateClosingStr}</span>
           </div>
         </div>
       </div>
 
       {/* 5. DEPARTURE SIMULATOR — "WHAT IF YOU LEAVE LATER?" */}
-      <div className="pt-2 border-t border-stroke/60 dark:border-white/10 space-y-3">
+      <div className="pt-3 border-t border-stroke/60 dark:border-white/10 space-y-3.5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold text-text-primary dark:text-white">
-            <Sliders className="w-3.5 h-3.5 text-accent" />
-            <span>What if you leave later?</span>
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <Sliders className="w-4 h-4" />
+            </div>
+            <span className="text-xs font-extrabold text-text-primary dark:text-white uppercase tracking-wider">
+              What if you leave later?
+            </span>
           </div>
           {!isRecommended && (
             <button
               onClick={() => setSliderDepMin(recDepMin)}
-              className="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
             >
-              <RotateCcw className="w-3 h-3" /> Reset ({milestones.safeDepStr})
+              <RotateCcw className="w-3.5 h-3.5" /> Reset ({milestones.safeDepStr})
             </button>
           )}
         </div>
@@ -245,25 +305,26 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
             step={5}
             value={sliderDepMin}
             onChange={(e) => setSliderDepMin(parseInt(e.target.value, 10))}
-            className="w-full h-2 bg-stroke dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
+            className="w-full h-2 bg-gradient-to-r from-blue-500 via-amber-500 to-rose-500 rounded-lg appearance-none cursor-pointer accent-blue-600"
           />
-          <div className="flex justify-between text-[11px] text-muted font-mono mt-1.5">
+          <div className="flex justify-between text-[11px] text-muted font-mono mt-1.5 font-bold">
             <span>{formatMinutesToTimeString(minSlider)}</span>
+            <span className="text-blue-600 dark:text-blue-400">◄ Slide Departure Time ►</span>
             <span>{formatMinutesToTimeString(maxSlider)} (Gate Closes)</span>
           </div>
         </div>
 
         {/* Live Simulation Output Card */}
-        <div className="bg-surface border border-stroke dark:bg-black/30 dark:border-white/5 p-3.5 rounded-2xl flex items-center justify-between flex-wrap gap-2 text-xs">
+        <div className="bg-surface border border-stroke dark:bg-black/40 dark:border-white/10 p-3.5 rounded-2xl flex items-center justify-between flex-wrap gap-2 text-xs">
           <div>
-            <span className="text-muted">Simulated departure: </span>
-            <strong className="font-mono text-text-primary dark:text-white">{selectedDepStr}</strong>
+            <span className="text-muted font-medium">Simulated departure: </span>
+            <strong className="font-mono font-extrabold text-text-primary dark:text-white">{selectedDepStr}</strong>
           </div>
           <div>
-            <span className="text-muted">Est. arrival: </span>
-            <strong className="font-mono text-text-primary dark:text-white">{simArrivalStr}</strong>
+            <span className="text-muted font-medium">Est. arrival: </span>
+            <strong className="font-mono font-extrabold text-text-primary dark:text-white">{simArrivalStr}</strong>
           </div>
-          <span className={`text-[11px] font-bold ${riskStatus.textColor}`}>
+          <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${riskStatus.badgeClass}`}>
             {riskStatus.label}
           </span>
         </div>

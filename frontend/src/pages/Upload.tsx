@@ -4,6 +4,7 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { uploadFile } from "../services/exam";
 import { db } from "../services/firebase";
 import Screen from "../components/Screen";
+import { Camera, UploadCloud, AlertTriangle, ArrowLeft } from "lucide-react";
 
 type Status = "idle" | "uploading" | "error";
 
@@ -114,15 +115,17 @@ const Upload: React.FC = () => {
       {/* Fixed back button – top left, always visible */}
       <button
         onClick={() => navigate(-1)}
-        className="fixed top-6 left-4 z-50 text-muted text-sm hover:text-text-primary transition-colors"
+        className="fixed top-6 left-4 z-50 text-muted text-sm hover:text-text-primary transition-colors flex items-center gap-1.5"
       >
-        ← Back
+        <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
       {status !== "error" && (
         <div className="glass p-7 animate-scaleIn">
           <div className="text-center mb-6">
-            <div className="text-5xl mb-4">📸</div>
+            <div className="h-14 w-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-4">
+              <Camera className="w-7 h-7" />
+            </div>
             <h1 className="font-display font-semibold text-xl text-text-primary">
               Scan Admit Card
             </h1>
@@ -142,7 +145,9 @@ const Upload: React.FC = () => {
                 dragActive ? "border-accent bg-accent/5" : "border-accent/40"
               }`}
             >
-              <div className="text-3xl mb-3">⬆️</div>
+              <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
+                <UploadCloud className="w-6 h-6" />
+              </div>
               <p className="text-text-primary text-sm font-medium">
                 Tap to scan or drag & drop
               </p>
@@ -177,7 +182,9 @@ const Upload: React.FC = () => {
 
       {status === "error" && (
         <div className="glass p-7 text-center animate-scaleIn">
-          <div className="text-5xl mb-4">⚠️</div>
+          <div className="h-14 w-14 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-7 h-7" />
+          </div>
           <h2 className="font-display font-semibold text-lg text-text-primary mb-2">
             Upload failed
           </h2>

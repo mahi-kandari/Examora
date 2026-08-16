@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { db } from "../services/firebase";
 import Screen from "../components/Screen";
+import { Moon, Sun } from "lucide-react";
 
 const Profile: React.FC = () => {
   // Tell TypeScript that logout is async
@@ -203,7 +204,7 @@ const Profile: React.FC = () => {
                 : "text-muted hover:text-text-primary"
             }`}
           >
-            <span>🌙</span> Dark Mode
+            <Moon className="w-4 h-4" /> Dark Mode
           </button>
           <button
             onClick={() => setTheme("light")}
@@ -213,7 +214,7 @@ const Profile: React.FC = () => {
                 : "text-muted hover:text-text-primary"
             }`}
           >
-            <span>☀️</span> Light Mode
+            <Sun className="w-4 h-4" /> Light Mode
           </button>
         </div>
       </div>
