@@ -36,6 +36,7 @@ pnpm-debug.log*
 # Uploads & Media
 uploads/
 
-# OS Files
+# OS Files & IDE Settings
 .DS_Store
 Thumbs.db
+.claude/
