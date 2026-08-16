@@ -76,11 +76,11 @@ function getRelativeTimeLabel(dateIso: string): string {
   return target.toLocaleDateString("en-US", { month: "long", year: "numeric" }).toUpperCase();
 }
 
-function getTimeBasedGreeting(): { greeting: string; icon: React.ReactNode } {
+function getTimeBasedGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 12) return { greeting: "Good morning", icon: <Sun className="w-4 h-4 text-amber-500 inline ml-1" /> };
-  if (hour < 17) return { greeting: "Good afternoon", icon: <CloudSun className="w-4 h-4 text-amber-500 inline ml-1" /> };
-  return { greeting: "Good evening", icon: <Hand className="w-4 h-4 text-amber-500 inline ml-1" /> };
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
 }
 
 // ---------- Component ----------
@@ -90,7 +90,7 @@ const Home: React.FC = () => {
   const [exams, setExams] = useState<ExamRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { greeting, icon: greetingIcon } = getTimeBasedGreeting();
+  const greeting = getTimeBasedGreeting();
 
   useEffect(() => {
     if (!user) return;
@@ -184,8 +184,8 @@ const Home: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
-              {greeting}, {firstName} {greetingIcon}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+              {greeting}, {firstName}
             </h1>
             <p className="text-muted text-xs mt-0.5 font-medium">
               Your exam schedule is ready to be created.
@@ -249,8 +249,8 @@ const Home: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
-              {greeting}, {firstName} {greetingIcon}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+              {greeting}, {firstName}
             </h1>
             <p className="text-muted text-xs mt-0.5 font-medium">
               You're all caught up! No upcoming exams.
@@ -345,8 +345,8 @@ const Home: React.FC = () => {
       {/* 1. HEADER */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight flex items-center">
-            {greeting}, {firstName} {greetingIcon}
+          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+            {greeting}, {firstName}
           </h1>
           <p className="text-muted text-xs mt-0.5 font-medium">
             Your exam schedule is looking good.
