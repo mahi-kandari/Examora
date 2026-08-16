@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* ---------- Theme definitions ---------- */
+:root, [data-theme="dark"], html.dark {
+  --bg-color: hsl(222 47% 6%);
+  --surface-color: hsl(222 47% 11%);
+  --glass-color: hsl(222 47% 13%);
+  --glass-bg-val: rgba(15, 23, 42, 0.65);
+  --glass-border-val: rgba(255, 255, 255, 0.1);
+  --text-primary-color: hsl(210 40% 96%);
+  --muted-color: hsl(215 20% 65%);
+  --stroke-color: hsl(222 47% 18%);
+  --accent-color: hsl(36 100% 55%);
+  --success-color: hsl(142 71% 45%);
+  --danger-color: hsl(0 84% 60%);
+  --app-gradient-val: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(222 55% 4%) 100%);
+  --card-shadow-val: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --glass-shadow-val: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --input-bg-val: rgba(15, 23, 42, 0.4);
+  --toggle-track-off: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"], html.light {
+  --bg-color: #F8FAFC;
+  --surface-color: #FFFFFF;
+  --glass-color: #FFFFFF;
+  --glass-bg-val: rgba(255, 255, 255, 0.85);
+  --glass-border-val: rgba(203, 213, 225, 0.8);
+  --text-primary-color: #0F172A;
+  --muted-color: #475569;
+  --stroke-color: #E2E8F0;
+  --accent-color: #D97706;
+  --success-color: #16A34A;
+  --danger-color: #DC2626;
+  --app-gradient-val: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+  --card-shadow-val: 0 4px 20px rgba(15, 23, 42, 0.06);
+  --glass-shadow-val: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --input-bg-val: #F1F5F9;
+  --toggle-track-off: #E2E8F0;
+}
+
+@theme {
+  --font-body: "Inter", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+
+  --color-bg: var(--bg-color);
+  --color-surface: var(--surface-color);
+  --color-glass: var(--glass-color);
+  --color-text-primary: var(--text-primary-color);
+  --color-muted: var(--muted-color);
+  --color-stroke: var(--stroke-color);
+  --color-accent: var(--accent-color);
+  --color-success: var(--success-color);
+  --color-danger: var(--danger-color);
+
+  --background-image-accent-gradient: linear-gradient(135deg, #F59E0B, #EA580C);
+  --background-image-app-gradient: var(--app-gradient-val);
+
+  --radius-4xl: 2rem;
+
+  --animate-fadeInUp: fadeInUp 0.4s ease-out both;
+  --animate-scaleIn: scaleIn 0.3s ease-out both;
+  --animate-shimmer: shimmer 1.6s infinite linear;
+  --animate-checkmarkDraw: checkmarkDraw 0.8s ease forwards;
+  --animate-glowPulse: glowPulse 2.4s ease-in-out infinite;
+  --animate-shake: shake 0.4s ease-in-out;
+
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  @keyframes checkmarkDraw {
+    0% { stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+}
+
+/* ---------- Global resets ---------- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-image: var(--app-gradient-val);
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ---------- Reusable components ---------- */
+@layer components {
+  .glass {
+    background: var(--glass-bg-val);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border-val);
+    border-radius: 1.5rem;
+    box-shadow: var(--glass-shadow-val);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .btn-primary {
+    background-image: var(--background-image-accent-gradient);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+    transition: all 0.3s;
+  }
+  .btn-primary:hover {
+    transform: scale(1.03);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    transform: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 2px solid var(--glass-border-val);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-weight: 500;
+    padding: 0.75rem 1.75rem;
+    border-radius: 1rem;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-accent);
+    background: hsl(36 100% 55% / 0.08);
+  }
+
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--glass-border-val);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow-val);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .input-field {
+    width: 100%;
+    background: var(--input-bg-val);
+    border: 1px solid var(--glass-border-val);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    color: var(--color-text-primary);
+    outline: none;
+    transition: all 0.3s;
+  }
+  .input-field::placeholder {
+    color: var(--color-muted);
+  }
+  .input-field:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px hsl(36 100% 55% / 0.3);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: hsl(36 100% 55% / 0.12);
+    color: var(--color-accent);
+    border: 1px solid hsl(36 100% 55% / 0.25);
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--glass-border-val);
+    border-radius: 0.75rem;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--input-bg-val),
+      transparent
+    );
+    background-size: 400px 100%;
+    animation: shimmer 1.6s infinite linear;
+  }
+}
+
+/* ---------- Additional utilities ---------- */
+@layer utilities {
+  .bg-app {
+    background-image: var(--app-gradient-val);
+    background-color: var(--bg-color);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

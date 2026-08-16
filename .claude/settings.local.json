@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -1 src/components)",
+      "Bash(ls -1 src/hooks)",
+      "Bash(ls -1 src/utils src/lib)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); const d={...p.dependencies,...p.devDependencies}; console.log\\('chart.js:', d['chart.js']\\); console.log\\('react-chartjs-2:', d['react-chartjs-2']\\);\")",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(./venv/bin/python -c \"import requests; print\\('requests', requests.__version__\\)\")",
+      "Bash(./venv/bin/python -c \"import httpx; print\\('httpx', httpx.__version__\\)\")",
+      "Bash(grep -nE \"\\(^|[^.a-zA-Z_]\\)user\\([^A-Za-z_]|$\\)\" src/pages/Confirm.tsx)",
+      "Bash(node -e \"const p=require\\('./frontend/package.json'\\); console.log\\('firebase:', \\(p.dependencies||{}\\).firebase\\)\")",
+      "Bash(./venv/bin/python -c \"from firebase_admin import messaging; print\\('firebase_admin.messaging OK'\\)\")",
+      "Bash(./venv/bin/python -c \"import apscheduler; print\\('apscheduler', apscheduler.version\\)\")",
+      "Bash(node -e \"const m=require\\('firebase/messaging'\\); console.log\\('getToken:', typeof m.getToken, '| isSupported:', typeof m.isSupported, '| deleteToken:', typeof m.deleteToken\\)\")",
+      "Bash(./venv/bin/python -m py_compile backend/main.py backend/chronos.py backend/notifications.py backend/notification_engine.py backend/calendar_service.py)",
+      "Bash(./venv/bin/python -c \"from firebase_admin import messaging; print\\('UnregisteredError:', hasattr\\(messaging,'UnregisteredError'\\)\\)\")",
+      "Bash(./venv/bin/python -c ' *)"
+    ]
+  }
+}

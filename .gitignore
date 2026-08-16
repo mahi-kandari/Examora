@@ -1,0 +1,41 @@
+# Environment & Virtualenvs
+venv/
+.venv/
+env/
+backend/venv/
+
+# Dependencies & Build
+node_modules/
+frontend/node_modules/
+dist/
+dist-ssr/
+frontend/dist/
+frontend/dist-ssr/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.env
+backend/.env
+frontend/.env
+frontend/.env.local
+backend/serviceAccountKey.json
+
+# Cache & Temporary Files
+__pycache__/
+*.pyc
+backend/__pycache__/
+backend/eta_cache.json
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Uploads & Media
+uploads/
+
+# OS Files
+.DS_Store
+Thumbs.db

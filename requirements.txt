@@ -1,0 +1,16 @@
+easyocr
+pytesseract
+pillow
+opencv-python-headless
+numpy
+PyMuPDF
+ollama
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+google-auth-oauthlib
+google-api-python-client
+pyfcm
+apscheduler
+requests
