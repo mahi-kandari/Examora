@@ -195,28 +195,28 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
           {/* Step 1: Leave */}
           <div className="p-3.5 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
             <span className="font-mono text-xs font-bold text-accent">{milestones.safeDepStr}</span>
-            <p className="text-sm sm:text-base font-extrabold text-text-primary dark:text-white">Leave Home</p>
+            <p className="text-sm sm:text-base font-semibold text-text-primary dark:text-white">Leave Home</p>
             <p className="text-xs text-muted font-medium">Recommended</p>
           </div>
 
           {/* Step 2: Arrive */}
           <div className="p-3.5 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
             <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">{predictedArrivalStr}</span>
-            <p className="text-sm sm:text-base font-extrabold text-text-primary dark:text-white">Arrive Centre</p>
+            <p className="text-sm sm:text-base font-semibold text-text-primary dark:text-white">Arrive Centre</p>
             <p className="text-xs text-muted font-medium">~{baseTravelMin} min travel</p>
           </div>
 
           {/* Step 3: Report */}
           <div className="p-3.5 rounded-2xl bg-surface border border-stroke/60 dark:bg-white/[0.03] dark:border-white/5 space-y-1">
             <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">{milestones.reportingStr}</span>
-            <p className="text-sm sm:text-base font-extrabold text-text-primary dark:text-white">Reporting Opens</p>
+            <p className="text-sm sm:text-base font-semibold text-text-primary dark:text-white">Reporting Opens</p>
             <p className="text-xs text-muted font-medium">Entry & Check-in</p>
           </div>
 
           {/* Step 4: Gate Closes */}
           <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-1">
             <span className="font-mono text-xs font-bold text-rose-600 dark:text-rose-400">{milestones.gateClosingStr}</span>
-            <p className="text-sm sm:text-base font-extrabold text-rose-600 dark:text-rose-400">Gate Closes</p>
+            <p className="text-sm sm:text-base font-semibold text-rose-600 dark:text-rose-400">Gate Closes</p>
             <p className="text-xs text-rose-600/80 dark:text-rose-300/80 font-bold">Hard Deadline</p>
           </div>
         </div>
@@ -227,7 +227,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-accent" />
-            <span className="text-sm sm:text-base font-extrabold text-text-primary dark:text-white tracking-tight">
+            <span className="text-sm sm:text-base font-semibold text-text-primary dark:text-white tracking-tight">
               What if you leave later?
             </span>
           </div>
