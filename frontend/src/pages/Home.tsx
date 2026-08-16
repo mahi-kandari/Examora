@@ -407,7 +407,7 @@ const Home: React.FC = () => {
       >
         {/* Top Tag & Badge */}
         <div className="flex items-center justify-between mb-3">
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 tracking-wider">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-[#2563EB] dark:text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 tracking-wider">
             <Zap className="w-3 h-3 fill-current" />
             {relativeNextTag} • NEXT EXAM
           </span>

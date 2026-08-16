@@ -27,7 +27,7 @@ const BottomNav: React.FC = () => {
                   {isActive && (
                     <motion.div
                       layoutId="activeTabPill"
-                      className="absolute inset-0 bg-blue-600 dark:bg-blue-600 rounded-full shadow-md shadow-blue-500/30"
+                      className="absolute inset-0 bg-[#FF5A43] dark:bg-[#FF6B57] rounded-full shadow-md shadow-[#FF5A43]/30"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}

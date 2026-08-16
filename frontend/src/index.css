@@ -1,47 +1,49 @@
 @import "tailwindcss";
 
-/* ---------- Theme definitions ---------- */
-:root, [data-theme="dark"], html.dark {
-  --bg-color: hsl(222 47% 6%);
-  --surface-color: hsl(222 47% 11%);
-  --glass-color: hsl(222 47% 13%);
-  --glass-bg-val: rgba(15, 23, 42, 0.65);
-  --glass-border-val: rgba(255, 255, 255, 0.1);
-  --text-primary-color: hsl(210 40% 96%);
-  --muted-color: hsl(215 20% 65%);
-  --stroke-color: hsl(222 47% 18%);
-  --accent-color: hsl(36 100% 55%);
-  --success-color: hsl(142 71% 45%);
-  --danger-color: hsl(0 84% 60%);
-  --app-gradient-val: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(222 55% 4%) 100%);
-  --card-shadow-val: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --glass-shadow-val: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --input-bg-val: rgba(15, 23, 42, 0.4);
-  --toggle-track-off: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="light"], html.light {
-  --bg-color: #F1F5F9;
-  --surface-color: #FFFFFF;
+/* ---------- Theme Definitions ---------- */
+:root, [data-theme="light"], html.light {
+  --bg-color: #FAF7F2;               /* Soft Cream Background */
+  --surface-color: #FFFFFF;          /* Pure White Cards */
   --glass-color: #FFFFFF;
-  --glass-bg-val: rgba(255, 255, 255, 0.92);
-  --glass-border-val: rgba(226, 232, 240, 0.9);
-  --text-primary-color: #0F172A;
-  --muted-color: #64748B;
-  --stroke-color: #E2E8F0;
-  --accent-color: #2563EB;
+  --glass-bg-val: rgba(255, 255, 255, 0.95);
+  --glass-border-val: rgba(230, 222, 210, 0.8);
+  --text-primary-color: #1E293B;     /* Deep Slate Text */
+  --muted-color: #64748B;            /* Muted Slate Text */
+  --stroke-color: #E6DECE;           /* Warm Soft Cream Border */
+  --accent-color: #FF5A43;           /* Vibrant Coral Primary Accent */
+  --electric-blue: #2563EB;         /* Electric Blue for Charts & Highlights */
   --success-color: #10B981;
   --danger-color: #EF4444;
-  --app-gradient-val: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
-  --card-shadow-val: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
-  --glass-shadow-val: 0 12px 36px -4px rgba(15, 23, 42, 0.08);
-  --input-bg-val: #F8FAFC;
-  --toggle-track-off: #E2E8F0;
+  --app-gradient-val: linear-gradient(180deg, #FDFBF7 0%, #FAF7F2 100%);
+  --card-shadow-val: 0 10px 30px -4px rgba(220, 208, 192, 0.45), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  --glass-shadow-val: 0 12px 36px -4px rgba(220, 208, 192, 0.5);
+  --input-bg-val: #F6F2EC;
+  --toggle-track-off: #E6DECE;
+}
+
+[data-theme="dark"], html.dark {
+  --bg-color: #0E131F;               /* Midnight Background */
+  --surface-color: #161C2E;          /* Midnight Surface Cards */
+  --glass-color: #161C2E;
+  --glass-bg-val: rgba(22, 28, 46, 0.92);
+  --glass-border-val: rgba(255, 255, 255, 0.1);
+  --text-primary-color: #F8FAFC;
+  --muted-color: #94A3B8;
+  --stroke-color: #232B3F;
+  --accent-color: #FF6B57;           /* Vibrant Coral */
+  --electric-blue: #3B82F6;         /* Electric Blue */
+  --success-color: #10B981;
+  --danger-color: #F43F5E;
+  --app-gradient-val: linear-gradient(180deg, #0E131F 0%, #0B0E18 100%);
+  --card-shadow-val: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+  --glass-shadow-val: 0 12px 36px -4px rgba(0, 0, 0, 0.5);
+  --input-bg-val: #1B2237;
+  --toggle-track-off: #232B3F;
 }
 
 @theme {
-  --font-body: "Inter", sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   --color-bg: var(--bg-color);
   --color-surface: var(--surface-color);
@@ -50,10 +52,13 @@
   --color-muted: var(--muted-color);
   --color-stroke: var(--stroke-color);
   --color-accent: var(--accent-color);
+  --color-coral: var(--accent-color);
+  --color-electric: var(--electric-blue);
   --color-success: var(--success-color);
   --color-danger: var(--danger-color);
 
-  --background-image-accent-gradient: linear-gradient(135deg, #F59E0B, #EA580C);
+  --background-image-accent-gradient: linear-gradient(135deg, #FF6B57, #FF5A43);
+  --background-image-electric-gradient: linear-gradient(135deg, #3B82F6, #1D61FF);
   --background-image-app-gradient: var(--app-gradient-val);
 
   --radius-4xl: 2rem;
@@ -63,7 +68,6 @@
   --animate-shimmer: shimmer 1.6s infinite linear;
   --animate-checkmarkDraw: checkmarkDraw 0.8s ease forwards;
   --animate-glowPulse: glowPulse 2.4s ease-in-out infinite;
-  --animate-shake: shake 0.4s ease-in-out;
 
   @keyframes fadeInUp {
     0% { opacity: 0; transform: translateY(16px); }
@@ -85,14 +89,9 @@
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
   }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
 }
 
-/* ---------- Global resets ---------- */
+/* ---------- Global Resets ---------- */
 * {
   -webkit-tap-highlight-color: transparent;
 }
@@ -111,7 +110,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ---------- Reusable components ---------- */
+/* ---------- Reusable Components ---------- */
 @layer components {
   .glass {
     background: var(--glass-bg-val);
@@ -123,20 +122,21 @@ body {
   }
 
   .btn-primary {
-    background-image: var(--background-image-accent-gradient);
+    background-image: linear-gradient(135deg, #FF6B57, #FF5A43);
     color: white;
     font-family: var(--font-display);
     font-weight: 600;
     padding: 0.875rem 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+    border-radius: 9999px;
+    box-shadow: 0 6px 20px rgba(255, 90, 67, 0.3);
     transition: all 0.3s;
   }
   .btn-primary:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(255, 90, 67, 0.4);
   }
   .btn-primary:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
   .btn-primary:disabled {
     opacity: 0.5;
@@ -144,19 +144,33 @@ body {
     transform: none;
   }
 
+  .btn-electric {
+    background-image: linear-gradient(135deg, #3B82F6, #1D61FF);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s;
+  }
+  .btn-electric:hover {
+    transform: scale(1.02);
+  }
+
   .btn-ghost {
     background: transparent;
-    border: 2px solid var(--glass-border-val);
+    border: 1px solid var(--glass-border-val);
     color: var(--color-text-primary);
     font-family: var(--font-display);
     font-weight: 500;
     padding: 0.75rem 1.75rem;
-    border-radius: 1rem;
+    border-radius: 9999px;
     transition: all 0.3s;
   }
   .btn-ghost:hover {
     border-color: var(--color-accent);
-    background: hsl(36 100% 55% / 0.08);
+    background: rgba(255, 90, 67, 0.08);
   }
 
   .card {
@@ -183,7 +197,7 @@ body {
   }
   .input-field:focus {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 2px hsl(36 100% 55% / 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 90, 67, 0.25);
   }
 
   .badge {
@@ -192,40 +206,21 @@ body {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.75rem;
-    font-weight: 500;
-    background: hsl(36 100% 55% / 0.12);
+    font-weight: 600;
+    background: rgba(255, 90, 67, 0.12);
     color: var(--color-accent);
-    border: 1px solid hsl(36 100% 55% / 0.25);
+    border: 1px solid rgba(255, 90, 67, 0.25);
   }
 
-  .skeleton {
-    position: relative;
-    overflow: hidden;
-    background-color: var(--glass-border-val);
-    border-radius: 0.75rem;
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      var(--input-bg-val),
-      transparent
-    );
-    background-size: 400px 100%;
-    animation: shimmer 1.6s infinite linear;
-  }
-}
-
-/* ---------- Additional utilities ---------- */
-@layer utilities {
-  .bg-app {
-    background-image: var(--app-gradient-val);
-    background-color: var(--bg-color);
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  .badge-electric {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--electric-blue);
+    border: 1px solid rgba(37, 99, 235, 0.25);
   }
 }
