@@ -17,6 +17,7 @@ import { useCountdown } from "../hooks/useCountdown";
 import { useGeofence } from "../hooks/useGeofence";
 import { generateGoogleCalendarUrl } from "../utils/calendar";
 import { ChronosVisualization } from "../components/ChronosVisualization";
+import { Navigation, MapPin, Car, RefreshCw, CheckCircle2 } from "lucide-react";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -485,45 +486,67 @@ const ExamDetail: React.FC = () => {
         />
       </div>
 
-      <div className="card mt-4 animate-fadeInUp">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-muted uppercase tracking-wide">
-            Geofence & Proximity Tracker
-          </p>
-          {geofence.isWithinGeofence ? (
-            <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30 animate-pulse">
-              Inside 2.0 km Geofence
-            </span>
-          ) : (
-            <span className="text-[11px] font-medium text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
-              Live GPS Active
-            </span>
-          )}
+      <div className="card mt-4 animate-fadeInUp space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <Navigation className="w-4 h-4 text-accent" />
+            <p className="text-xs font-extrabold text-text-primary dark:text-white uppercase tracking-wide">
+              Geofence & Proximity Tracker
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {geofence.isWithinGeofence ? (
+              <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30 animate-pulse flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" /> Inside 2.0 km Geofence
+              </span>
+            ) : (
+              <span className="text-[11px] font-bold text-blue-500 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" /> Live GPS Active
+              </span>
+            )}
+            <button
+              onClick={geofence.requestGPS}
+              title="Refresh GPS Location"
+              className="p-1 rounded-lg hover:bg-surface text-muted hover:text-text-primary transition-colors"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${geofence.isLoading ? "animate-spin text-accent" : ""}`} />
+            </button>
+          </div>
         </div>
 
         {geofence.distanceKm !== null ? (
-          <div className="mt-2">
-            <p className="text-sm font-semibold text-text-primary">
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center gap-2 text-sm font-bold text-text-primary dark:text-white">
               {geofence.isWithinGeofence ? (
-                <span className="text-emerald-400">
-                  📍 You are {geofence.distanceKm} km from your test centre!
+                <span className="text-emerald-500 dark:text-emerald-400 flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4" /> You are {geofence.distanceKm} km from your test centre!
                 </span>
               ) : (
-                <span>🚗 {geofence.distanceKm} km away from test centre</span>
+                <span className="flex items-center gap-1.5">
+                  <Car className="w-4 h-4 text-accent" /> {geofence.distanceKm} km away from test centre
+                </span>
               )}
-            </p>
-            <p className="text-xs text-muted mt-1 leading-relaxed">
+            </div>
+            <p className="text-xs text-muted leading-relaxed">
               {geofence.isWithinGeofence
                 ? "You are inside the 2.0 km geofence zone. Have your Admit Card, Original Photo ID, and required items ready at the gate!"
                 : "Geofence notifications trigger automatically when you arrive within 2.0 km of the test centre."}
             </p>
           </div>
         ) : (
-          <p className="text-xs text-muted mt-2">
-            {geofence.error
-              ? `GPS Status: ${geofence.error}`
-              : "Acquiring live GPS location to calculate distance to test centre..."}
-          </p>
+          <div className="flex items-center justify-between text-xs text-muted pt-1">
+            <span>
+              {geofence.error
+                ? `GPS Status: ${geofence.error}`
+                : "Acquiring live GPS location to calculate distance..."}
+            </span>
+            <button
+              onClick={geofence.requestGPS}
+              className="text-accent font-semibold hover:underline flex items-center gap-1"
+            >
+              <RefreshCw className="w-3 h-3" /> Retry GPS
+            </button>
+          </div>
         )}
       </div>
 
