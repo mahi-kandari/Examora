@@ -88,14 +88,13 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
   const simArrivalStr = formatMinutesToTimeString(simArrivalMin);
   const simBufferMin = reportingMin - simArrivalMin;
 
-  // Risk Classification
+  // Risk Classification (Theme aware text & contrast colors)
   const riskStatus = useMemo(() => {
     if (simArrivalMin > gateMin) {
       return {
         level: "danger",
         badgeText: "🔴 GATE CLOSED - MISSED EXAM",
-        label: "Gate Closed",
-        colorClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
+        colorClass: "text-rose-700 bg-rose-500/10 border-rose-500/30 dark:text-rose-300 dark:bg-rose-500/20",
         advice: `If you leave at ${selectedDepStr}, you will arrive at ${simArrivalStr}, after the gate closes at ${milestones.gateClosingStr}!`,
       };
     }
@@ -103,8 +102,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
       return {
         level: "danger",
         badgeText: "🔴 LATE FOR REPORTING",
-        label: "Missed Reporting",
-        colorClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
+        colorClass: "text-rose-700 bg-rose-500/10 border-rose-500/30 dark:text-rose-300 dark:bg-rose-500/20",
         advice: `Leaving at ${selectedDepStr} puts arrival at ${simArrivalStr}, which is ${Math.abs(simBufferMin)} minutes after reporting time!`,
       };
     }
@@ -112,16 +110,14 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
       return {
         level: "warning",
         badgeText: "🟡 TIGHT BUFFER",
-        label: "Tight Window",
-        colorClass: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+        colorClass: "text-amber-800 bg-amber-500/10 border-amber-500/30 dark:text-amber-300 dark:bg-amber-500/20",
         advice: `Leaving at ${selectedDepStr} leaves only ${simBufferMin} minutes of buffer before reporting at ${milestones.reportingStr}. High risk of delays.`,
       };
     }
     return {
       level: "safe",
       badgeText: "🟢 COMFORTABLE BUFFER",
-      label: "Safe Schedule",
-      colorClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+      colorClass: "text-emerald-800 bg-emerald-500/10 border-emerald-500/30 dark:text-emerald-300 dark:bg-emerald-500/20",
       advice: `Leaving at ${selectedDepStr} gives you approximately ${simBufferMin} minutes of safety buffer before reporting at ${milestones.reportingStr}.`,
     };
   }, [simArrivalMin, simBufferMin, gateMin, selectedDepStr, simArrivalStr, milestones]);
@@ -131,7 +127,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
   return (
     <div className="space-y-4">
       {/* 1. Header & Time Until Departure Countdown */}
-      <div className="card bg-glass/60 border border-white/10 p-5 rounded-2xl animate-fadeInUp shadow-xl">
+      <div className="card bg-surface/90 dark:bg-glass/60 border border-stroke dark:border-white/10 p-5 rounded-2xl animate-fadeInUp shadow-xl">
         <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-accent animate-ping" />
@@ -140,7 +136,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
             </p>
           </div>
           {countdown && (
-            <div className="bg-glass/80 px-3 py-1 rounded-full border border-white/10 flex items-center gap-2">
+            <div className="bg-surface border border-stroke dark:bg-glass/80 dark:border-white/10 px-3 py-1 rounded-full flex items-center gap-2">
               <span className="text-[10px] text-muted uppercase font-semibold">Leave In:</span>
               <span className="font-mono text-sm font-bold text-accent tracking-wider">
                 {countdown}
@@ -152,38 +148,38 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
         {/* 2. Hero Section: LEAVE BY -> ARRIVE BY */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mt-2">
           {/* LEAVE BY HERO */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-500/15 via-blue-600/10 to-transparent border border-blue-500/30 rounded-2xl p-4 flex flex-col justify-between shadow-inner">
+          <div className="relative overflow-hidden bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/30 dark:border-blue-500/40 rounded-2xl p-4 flex flex-col justify-between shadow-inner">
             <div>
-              <p className="text-[11px] font-bold text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
+              <p className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest flex items-center gap-1.5">
                 🚀 LEAVE HOME BY
               </p>
-              <h2 className="text-3xl font-display font-extrabold text-white mt-1 tracking-tight">
+              <h2 className="text-3xl font-display font-extrabold text-text-primary dark:text-white mt-1 tracking-tight">
                 {selectedDepStr}
               </h2>
             </div>
-            <p className="text-xs text-blue-200/70 mt-2 font-medium">
+            <p className="text-xs text-blue-700/80 dark:text-blue-200/70 mt-2 font-medium">
               {isRecommended ? "Recommended departure time" : "Simulated departure time"}
             </p>
           </div>
 
           {/* ARRIVE BY HERO */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500/15 via-emerald-600/10 to-transparent border border-emerald-500/30 rounded-2xl p-4 flex flex-col justify-between shadow-inner">
+          <div className="relative overflow-hidden bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 dark:border-emerald-500/40 rounded-2xl p-4 flex flex-col justify-between shadow-inner">
             <div>
-              <p className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+              <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
                 🏁 ESTIMATED ARRIVAL
               </p>
-              <h2 className="text-3xl font-display font-extrabold text-white mt-1 tracking-tight">
+              <h2 className="text-3xl font-display font-extrabold text-text-primary dark:text-white mt-1 tracking-tight">
                 {simArrivalStr}
               </h2>
             </div>
-            <p className="text-xs text-emerald-200/70 mt-2 font-medium">
+            <p className="text-xs text-emerald-700/80 dark:text-emerald-200/70 mt-2 font-medium">
               Estimated arrival at test centre
             </p>
           </div>
         </div>
 
         {/* Journey Connector Badge */}
-        <div className="flex items-center justify-center gap-2 text-xs text-muted font-medium bg-black/30 border border-white/5 py-2 px-4 rounded-xl mt-3">
+        <div className="flex items-center justify-center gap-2 text-xs text-muted font-medium bg-surface border border-stroke dark:bg-black/30 dark:border-white/5 py-2 px-4 rounded-xl mt-3">
           <span>🏠 Home</span>
           <span className="text-accent font-semibold">➜ 🚗 {simTravelMin} min journey ➜</span>
           <span>📍 Exam Centre</span>
@@ -201,21 +197,21 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
               <h3 className="text-sm font-bold tracking-wide uppercase">
                 {simBufferMin >= 0 ? `${simBufferMin} MIN SAFETY BUFFER` : "NO SAFETY BUFFER"}
               </h3>
-              <p className="text-xs opacity-90 mt-0.5">
+              <p className="text-xs opacity-90 mt-0.5 font-medium">
                 {simBufferMin >= 0
                   ? `Arrive ${simBufferMin} mins before reporting at ${milestones.reportingStr}`
                   : `Arriving late after reporting time (${milestones.reportingStr})`}
               </p>
             </div>
           </div>
-          <span className="text-xs font-extrabold uppercase px-3 py-1 rounded-full border bg-black/40 backdrop-blur-md">
+          <span className="text-xs font-extrabold uppercase px-3 py-1 rounded-full border bg-surface/80 dark:bg-black/40 backdrop-blur-md">
             {riskStatus.badgeText}
           </span>
         </div>
       </div>
 
       {/* 4. Visual 4-Step Journey Timeline */}
-      <div className="card bg-glass p-5 rounded-2xl border border-white/10 space-y-4">
+      <div className="card bg-surface/90 dark:bg-glass p-5 rounded-2xl border border-stroke dark:border-white/10 space-y-4">
         <p className="text-xs font-semibold text-muted uppercase tracking-wider">
           Exam-Day Milestone Timeline
         </p>
@@ -223,7 +219,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
         <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-blue-500 before:via-emerald-500 to-rose-500">
           {/* Step 1: Leave Home */}
           <div className="relative flex items-start justify-between gap-3">
-            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-blue-500/50">
+            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-blue-500/30">
               1
             </span>
             <div>
@@ -232,14 +228,14 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
               </h4>
               <p className="text-xs text-muted">Recommended departure for a smooth commute</p>
             </div>
-            <span className="font-mono text-sm font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20 shrink-0">
+            <span className="font-mono text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/30 shrink-0">
               {milestones.safeDepStr}
             </span>
           </div>
 
           {/* Step 2: Estimated Arrival */}
           <div className="relative flex items-start justify-between gap-3">
-            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-emerald-500/50">
+            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-emerald-500/30">
               2
             </span>
             <div>
@@ -248,14 +244,14 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
               </h4>
               <p className="text-xs text-muted">Approx. {baseTravelMin} mins travel from home</p>
             </div>
-            <span className="font-mono text-sm font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 shrink-0">
+            <span className="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/30 shrink-0">
               {predictedArrivalStr}
             </span>
           </div>
 
           {/* Step 3: Reporting Time */}
           <div className="relative flex items-start justify-between gap-3">
-            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-amber-500/50">
+            <span className="absolute -left-6 top-0.5 h-5 w-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-amber-500/30">
               3
             </span>
             <div>
@@ -264,25 +260,25 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
               </h4>
               <p className="text-xs text-muted">Document verification & biometric check-in</p>
             </div>
-            <span className="font-mono text-sm font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20 shrink-0">
+            <span className="font-mono text-sm font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30 shrink-0">
               {milestones.reportingStr}
             </span>
           </div>
 
           {/* Step 4: Gate Closes (HARD DEADLINE) */}
           <div className="relative flex items-start justify-between gap-3 pt-2 border-t border-rose-500/20">
-            <span className="absolute -left-6 top-2.5 h-5 w-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-rose-500/50">
+            <span className="absolute -left-6 top-2.5 h-5 w-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow-lg shadow-rose-500/30">
               4
             </span>
             <div>
-              <h4 className="text-sm font-extrabold text-rose-400 flex items-center gap-1.5">
+              <h4 className="text-sm font-extrabold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                 🚪 GATE CLOSES (HARD DEADLINE)
               </h4>
-              <p className="text-xs text-rose-300/80 font-medium">
+              <p className="text-xs text-rose-600/80 dark:text-rose-300/80 font-medium">
                 ⛔ Do not cross this point. Gates strictly locked!
               </p>
             </div>
-            <span className="font-mono text-sm font-extrabold text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg border border-rose-500/40 shrink-0">
+            <span className="font-mono text-sm font-extrabold text-rose-600 dark:text-rose-400 bg-rose-500/15 px-2.5 py-1 rounded-lg border border-rose-500/30 shrink-0">
               {milestones.gateClosingStr}
             </span>
           </div>
@@ -290,7 +286,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
       </div>
 
       {/* 5. Interactive "What if I leave later?" Departure Slider */}
-      <div className="card bg-glass/80 p-5 rounded-2xl border border-white/10 space-y-3">
+      <div className="card bg-surface/90 dark:bg-glass/80 p-5 rounded-2xl border border-stroke dark:border-white/10 space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <p className="text-xs font-semibold text-muted uppercase tracking-wider">
             What if I leave at a different time?
@@ -324,7 +320,7 @@ export const ChronosVisualization: React.FC<ChronosVisualizationProps> = ({
         </div>
 
         {/* Human-Readable Advice Box */}
-        <div className="bg-black/30 p-3.5 rounded-xl border border-white/5 text-xs text-text-primary leading-relaxed">
+        <div className="bg-surface border border-stroke dark:bg-black/40 dark:border-white/10 p-3.5 rounded-xl text-xs text-text-primary leading-relaxed">
           <p>{riskStatus.advice}</p>
         </div>
       </div>

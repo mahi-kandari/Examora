@@ -197,7 +197,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Hero Card */}
-        <div className="glass p-5 text-center animate-fadeInUp mb-4 border border-white/10 rounded-2xl">
+        <div className="glass p-5 text-center animate-fadeInUp mb-4 border border-stroke rounded-2xl">
           <img
             src={studyImg}
             alt="Student studying"
@@ -215,19 +215,23 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-2 gap-3 mb-6">
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📷</div>
-            <p className="font-display font-semibold text-sm text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-[11px] mt-0.5">Import exam in seconds</p>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📷
+            </div>
+            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
+            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
           </button>
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</div>
-            <p className="font-display font-semibold text-sm text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-[11px] mt-0.5">Auto-create schedule</p>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📄
+            </div>
+            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
+            <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
           </button>
         </div>
 
@@ -257,7 +261,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        <div className="glass p-6 text-center animate-fadeInUp mb-5 border border-white/10 rounded-2xl">
+        <div className="glass p-6 text-center animate-fadeInUp mb-5 border border-stroke rounded-2xl">
           <img
             src={relaxingImg}
             alt="Student relaxing"
@@ -275,19 +279,23 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-2 gap-3 mb-6">
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📷</div>
-            <p className="font-display font-semibold text-sm text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-[11px] mt-0.5">Import exam in seconds</p>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📷
+            </div>
+            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
+            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
           </button>
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</div>
-            <p className="font-display font-semibold text-sm text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-[11px] mt-0.5">Auto-create schedule</p>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📄
+            </div>
+            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
+            <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
           </button>
         </div>
 
@@ -301,7 +309,7 @@ const Home: React.FC = () => {
                 <button
                   key={exam.id}
                   onClick={() => navigate(`/exam/${exam.id}`)}
-                  className="w-full text-left glass p-3.5 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-between"
+                  className="w-full text-left glass p-3.5 rounded-xl border border-stroke/50 hover:border-accent/40 transition-all flex items-center justify-between"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-sm text-text-primary truncate">
@@ -311,7 +319,7 @@ const Home: React.FC = () => {
                       {exam.exam_date ? formatDate(exam.exam_date) : ""}
                     </p>
                   </div>
-                  <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                     Completed
                   </span>
                 </button>
@@ -350,10 +358,10 @@ const Home: React.FC = () => {
       </div>
 
       {/* 2. NEXT EXAM - PRIMARY HERO CARD */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent border border-orange-500/30 rounded-2xl p-5 mb-5 shadow-xl animate-fadeInUp">
+      <div className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-surface dark:from-amber-500/15 dark:via-orange-500/10 dark:to-transparent border border-orange-500/30 dark:border-orange-500/40 rounded-2xl p-5 mb-5 shadow-xl animate-fadeInUp">
         {/* Top Tag & Badge */}
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[11px] font-bold text-orange-400 bg-orange-500/20 px-2.5 py-0.5 rounded-full border border-orange-500/30 tracking-wider">
+          <span className="text-[11px] font-bold text-orange-600 dark:text-orange-400 bg-orange-500/15 dark:bg-orange-500/20 px-2.5 py-0.5 rounded-full border border-orange-500/30 tracking-wider">
             {relativeNextTag} • NEXT EXAM
           </span>
           <span className="text-xs text-muted font-medium">
@@ -362,44 +370,44 @@ const Home: React.FC = () => {
         </div>
 
         {/* Title */}
-        <h2 className="font-display font-bold text-lg text-white leading-snug mb-3">
+        <h2 className="font-display font-bold text-lg text-text-primary leading-snug mb-3">
           {nextExam.exam_title || "Upcoming Exam"}
         </h2>
 
         {/* Info Grid */}
         <div className="space-y-1.5 mb-4">
           {nextExam.reporting_time && (
-            <div className="flex items-center gap-2 text-xs text-text-primary/90">
-              <ClockIcon className="h-4 w-4 text-orange-400 shrink-0" />
-              <span>Reporting: <strong className="text-white">{nextExam.reporting_time}</strong></span>
+            <div className="flex items-center gap-2 text-xs text-text-primary">
+              <ClockIcon className="h-4 w-4 text-orange-500 shrink-0" />
+              <span>Reporting: <strong className="text-text-primary font-semibold">{nextExam.reporting_time}</strong></span>
             </div>
           )}
 
           <div className="flex items-center gap-2 text-xs text-muted truncate">
-            <MapPinIcon className="h-4 w-4 text-orange-400 shrink-0" />
+            <MapPinIcon className="h-4 w-4 text-orange-500 shrink-0" />
             <span className="truncate">{getCenterName(nextExam)}</span>
           </div>
         </div>
 
         {/* Integrated Countdown Box */}
         {urgentCountdown && (
-          <div className="bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center justify-between gap-2 mb-4">
+          <div className="bg-surface/90 border border-stroke dark:bg-black/40 dark:border-white/10 p-3 rounded-xl flex items-center justify-between gap-2 mb-4 shadow-sm">
             <div>
               <p className="text-[10px] uppercase font-bold text-muted tracking-wider">
                 Time Until Departure
               </p>
-              <p className="font-mono text-xl font-extrabold text-orange-400 tracking-wider">
+              <p className="font-mono text-xl font-extrabold text-accent tracking-wider">
                 {urgentCountdown}
               </p>
             </div>
-            <span className="h-2 w-2 rounded-full bg-orange-500 animate-ping shrink-0" />
+            <span className="h-2.5 w-2.5 rounded-full bg-orange-500 animate-ping shrink-0" />
           </div>
         )}
 
         {/* Primary Hero CTA */}
         <button
           onClick={() => navigate(`/exam/${nextExam.id}`)}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs py-2.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
         >
           <span>View Exam Logistics</span>
           <ChevronRightIcon className="h-4 w-4" />
@@ -414,17 +422,21 @@ const Home: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-3.5 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-xl mb-1.5 group-hover:scale-110 transition-transform">📷</div>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📷
+            </div>
             <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
             <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
           </button>
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-3.5 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all group"
+            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
           >
-            <div className="text-xl mb-1.5 group-hover:scale-110 transition-transform">📄</div>
+            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
+              📄
+            </div>
             <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
             <p className="text-muted text-[10px] mt-0.5">Auto schedule</p>
           </button>
@@ -446,7 +458,7 @@ const Home: React.FC = () => {
           <div className="space-y-4">
             {Array.from(groupedOtherExams.entries()).map(([label, examGroup]) => (
               <div key={label} className="space-y-2">
-                <p className="text-[11px] font-bold text-accent/80 uppercase tracking-widest px-1">
+                <p className="text-[11px] font-bold text-accent uppercase tracking-widest px-1">
                   {label}
                 </p>
                 <div className="space-y-2">
@@ -454,7 +466,7 @@ const Home: React.FC = () => {
                     <button
                       key={exam.id}
                       onClick={() => navigate(`/exam/${exam.id}`)}
-                      className="w-full text-left glass p-3.5 rounded-2xl border border-white/10 hover:border-accent/40 transition-all flex items-center justify-between group"
+                      className="w-full text-left glass p-3.5 rounded-2xl border border-stroke/60 dark:border-white/10 hover:border-accent/40 transition-all flex items-center justify-between group"
                     >
                       <div className="min-w-0 flex-1 pr-3">
                         <p className="font-display font-semibold text-sm text-text-primary truncate">
@@ -466,7 +478,7 @@ const Home: React.FC = () => {
                             <span>🕐 {exam.reporting_time}</span>
                           )}
                         </div>
-                        <p className="text-xs text-muted/80 truncate mt-0.5">
+                        <p className="text-xs text-muted truncate mt-0.5">
                           📍 {getCenterName(exam)}
                         </p>
                       </div>
@@ -478,7 +490,7 @@ const Home: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="glass p-4 rounded-2xl border border-white/5 text-center text-xs text-muted">
+          <div className="glass p-4 rounded-2xl border border-stroke/50 text-center text-xs text-muted">
             No additional upcoming exams scheduled.
           </div>
         )}
@@ -495,7 +507,7 @@ const Home: React.FC = () => {
               <button
                 key={exam.id}
                 onClick={() => navigate(`/exam/${exam.id}`)}
-                className="w-full text-left glass p-3 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-between"
+                className="w-full text-left glass p-3 rounded-xl border border-stroke/50 hover:border-accent/40 transition-all flex items-center justify-between"
               >
                 <div className="min-w-0 flex-1 pr-2">
                   <p className="font-medium text-xs text-text-primary truncate">
@@ -505,7 +517,7 @@ const Home: React.FC = () => {
                     {exam.exam_date ? formatDate(exam.exam_date) : ""}
                   </p>
                 </div>
-                <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                   Completed
                 </span>
               </button>
