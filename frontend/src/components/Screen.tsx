@@ -13,12 +13,15 @@ const Screen: React.FC<ScreenProps> = ({ children, withNav = false, className = 
       <div
         className={`
           w-full 
-          max-w-sm 
+          max-w-md 
+          sm:max-w-lg 
           md:max-w-2xl 
           lg:max-w-4xl 
-          px-5 
-          pt-8 
-          ${withNav ? "pb-32" : "pb-8"} 
+          px-4 
+          sm:px-6 
+          pt-6 
+          sm:pt-8 
+          ${withNav ? "pb-36" : "pb-12"} 
           ${className}
         `}
       >

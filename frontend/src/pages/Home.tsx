@@ -194,16 +194,16 @@ const Home: React.FC = () => {
     return (
       <Screen withNav>
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-display font-extrabold text-2xl text-text-primary tracking-tight">
+        <div className="flex items-start justify-between gap-3 mb-5">
+          <div className="flex-1 min-w-0">
+            <h1 className="font-display font-extrabold text-xl sm:text-2xl text-text-primary tracking-tight leading-snug">
               {greeting}, {firstName} {emoji}
             </h1>
             <p className="text-muted text-xs mt-1 font-medium">
               Your exam schedule is ready to be created.
             </p>
           </div>
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
             {initials}
           </div>
         </div>
@@ -381,20 +381,20 @@ const Home: React.FC = () => {
   return (
     <Screen withNav>
       {/* 1. HEADER (EverSync Dribbble Style Header) */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="font-display font-extrabold text-2xl text-text-primary tracking-tight flex items-center gap-2">
-            <span>Let's organize your</span>
-            <span className="px-3 py-0.5 bg-blue-600 text-white rounded-xl font-bold shadow-md shadow-blue-500/30 inline-block">
+      <div className="flex items-start justify-between gap-3 mb-6">
+        <div className="flex-1 min-w-0">
+          <h1 className="font-display font-extrabold text-xl sm:text-2xl text-text-primary tracking-tight leading-snug">
+            Let's organize your{" "}
+            <span className="inline-flex items-center px-2.5 py-0.5 bg-blue-600 text-white rounded-xl font-bold text-sm sm:text-base shadow-md shadow-blue-500/30 align-middle">
               {upcoming.length} {upcoming.length === 1 ? "exam" : "exams"}
-            </span>
-            <span>today!</span>
+            </span>{" "}
+            today!
           </h1>
           <p className="text-muted text-xs mt-1 font-medium">
             Your exam schedule is looking good.
           </p>
         </div>
-        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
+        <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
           {initials}
         </div>
       </div>
