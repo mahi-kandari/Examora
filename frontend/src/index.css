@@ -40,8 +40,9 @@
 }
 
 @theme {
-  --font-body: "Inter", sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   --color-bg: var(--bg-color);
   --color-surface: var(--surface-color);
@@ -102,12 +103,13 @@ body,
   height: 100%;
 }
 body {
-  font-family: var(--font-body);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--color-text-primary);
   background-image: var(--app-gradient-val);
   background-color: var(--bg-color);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
