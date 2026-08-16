@@ -21,21 +21,21 @@
 }
 
 [data-theme="light"], html.light {
-  --bg-color: #F8FAFC;
+  --bg-color: #F1F5F9;
   --surface-color: #FFFFFF;
   --glass-color: #FFFFFF;
-  --glass-bg-val: rgba(255, 255, 255, 0.85);
-  --glass-border-val: rgba(203, 213, 225, 0.8);
+  --glass-bg-val: rgba(255, 255, 255, 0.92);
+  --glass-border-val: rgba(226, 232, 240, 0.9);
   --text-primary-color: #0F172A;
-  --muted-color: #475569;
+  --muted-color: #64748B;
   --stroke-color: #E2E8F0;
-  --accent-color: #D97706;
-  --success-color: #16A34A;
-  --danger-color: #DC2626;
+  --accent-color: #2563EB;
+  --success-color: #10B981;
+  --danger-color: #EF4444;
   --app-gradient-val: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
-  --card-shadow-val: 0 4px 20px rgba(15, 23, 42, 0.06);
-  --glass-shadow-val: 0 8px 30px rgba(15, 23, 42, 0.08);
-  --input-bg-val: #F1F5F9;
+  --card-shadow-val: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  --glass-shadow-val: 0 12px 36px -4px rgba(15, 23, 42, 0.08);
+  --input-bg-val: #F8FAFC;
   --toggle-track-off: #E2E8F0;
 }
 

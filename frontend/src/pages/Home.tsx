@@ -2,11 +2,23 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { User } from "firebase/auth";
+import { motion } from "framer-motion";
+import {
+  QrCode,
+  FileText,
+  Calendar,
+  MapPin,
+  Clock,
+  ChevronRight,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 import { db } from "../services/firebase";
 import { useAuth } from "../contexts/AuthContext";
 import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
-import { MapPinIcon, ClockIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import relaxingImg from "../assets/relaxing.webp";
 import studyImg from "../assets/study.png";
 
@@ -135,7 +147,7 @@ const Home: React.FC = () => {
   // NEXT EXAM (Single top upcoming exam ONLY)
   const nextExam = upcoming[0];
 
-  // OTHER EXAMS (Excludes nextExam to ensure NO DUPLICATES anywhere!)
+  // OTHER EXAMS (Excludes nextExam to ensure ZERO DUPLICATES anywhere!)
   const otherUpcoming = useMemo(() => {
     if (!nextExam) return [];
     return upcoming.filter((e) => e.id !== nextExam.id);
@@ -171,7 +183,7 @@ const Home: React.FC = () => {
     return (
       <Screen withNav>
         <div className="flex justify-center mt-16">
-          <div className="animate-spin h-10 w-10 border-4 border-accent/30 border-t-accent rounded-full" />
+          <div className="animate-spin h-10 w-10 border-4 border-blue-500/30 border-t-blue-600 rounded-full" />
         </div>
       </Screen>
     );
@@ -182,60 +194,73 @@ const Home: React.FC = () => {
     return (
       <Screen withNav>
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+            <h1 className="font-display font-extrabold text-2xl text-text-primary tracking-tight">
               {greeting}, {firstName} {emoji}
             </h1>
-            <p className="text-muted text-xs mt-0.5 font-medium">
+            <p className="text-muted text-xs mt-1 font-medium">
               Your exam schedule is ready to be created.
             </p>
           </div>
-          <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
             {initials}
           </div>
         </div>
 
         {/* Hero Card */}
-        <div className="glass p-5 text-center animate-fadeInUp mb-4 border border-stroke rounded-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card bg-surface border border-stroke p-6 text-center mb-5 rounded-3xl shadow-xl"
+        >
           <img
             src={studyImg}
             alt="Student studying"
-            className="w-48 h-36 mx-auto object-contain mb-2"
+            className="w-48 h-36 mx-auto object-contain mb-3"
           />
-          <h2 className="font-display font-bold text-base text-text-primary mb-1">
+          <h2 className="font-display font-extrabold text-lg text-text-primary mb-1">
             Your exam companion is ready
           </h2>
           <p className="text-muted text-xs leading-relaxed max-w-xs mx-auto">
             Scan your first admit card and we’ll automatically build your complete exam schedule.
           </p>
-        </div>
+        </motion.div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <button
+        <div className="grid grid-cols-2 gap-3.5 mb-6">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <QrCode className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
-          </button>
-          <button
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Scan Admit Card</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Import in seconds</p>
+            </div>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-10 w-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <FileText className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
-          </button>
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Upload Date Sheet</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Auto-create schedule</p>
+            </div>
+          </motion.button>
         </div>
 
-        <p className="text-center text-[11px] text-muted mt-8">
+        <p className="text-center text-xs text-muted mt-8 font-medium">
           Helping students stay exam-ready.
         </p>
       </Screen>
@@ -247,79 +272,92 @@ const Home: React.FC = () => {
     return (
       <Screen withNav>
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+            <h1 className="font-display font-extrabold text-2xl text-text-primary tracking-tight">
               {greeting}, {firstName} {emoji}
             </h1>
-            <p className="text-muted text-xs mt-0.5 font-medium">
+            <p className="text-muted text-xs mt-1 font-medium">
               You're all caught up! No upcoming exams.
             </p>
           </div>
-          <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
             {initials}
           </div>
         </div>
 
-        <div className="glass p-6 text-center animate-fadeInUp mb-5 border border-stroke rounded-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card bg-surface border border-stroke p-6 text-center mb-5 rounded-3xl shadow-xl"
+        >
           <img
             src={relaxingImg}
             alt="Student relaxing"
             className="w-40 h-40 mx-auto mb-3 object-contain"
           />
-          <h2 className="font-display font-bold text-base text-text-primary mb-1">
+          <h2 className="font-display font-extrabold text-lg text-text-primary mb-1">
             All caught up!
           </h2>
           <p className="text-muted text-xs leading-relaxed max-w-xs mx-auto">
             Take a break. We'll notify you when a new exam is scheduled.
           </p>
-        </div>
+        </motion.div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <button
+        <div className="grid grid-cols-2 gap-3.5 mb-6">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <QrCode className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
-          </button>
-          <button
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Scan Admit Card</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Import in seconds</p>
+            </div>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-10 w-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <FileText className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-[10px] mt-0.5">Auto-create schedule</p>
-          </button>
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Upload Date Sheet</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Auto-create schedule</p>
+            </div>
+          </motion.button>
         </div>
 
         {completed.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+            <p className="text-xs font-bold text-muted uppercase tracking-wider mb-3">
               Recently Completed
-            </h2>
+            </p>
             <div className="space-y-2.5">
               {completed.slice(0, 3).map((exam) => (
                 <button
                   key={exam.id}
                   onClick={() => navigate(`/exam/${exam.id}`)}
-                  className="w-full text-left glass p-3.5 rounded-xl border border-stroke/50 hover:border-accent/40 transition-all flex items-center justify-between"
+                  className="w-full text-left card bg-surface border border-stroke p-3.5 rounded-2xl hover:border-blue-500/40 transition-all flex items-center justify-between"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm text-text-primary truncate">
+                    <p className="font-bold text-sm text-text-primary truncate">
                       {exam.exam_title || "Exam"}
                     </p>
-                    <p className="text-muted text-xs">
+                    <p className="text-muted text-xs font-medium">
                       {exam.exam_date ? formatDate(exam.exam_date) : ""}
                     </p>
                   </div>
-                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 shrink-0">
                     Completed
                   </span>
                 </button>
@@ -342,114 +380,136 @@ const Home: React.FC = () => {
 
   return (
     <Screen withNav>
-      {/* 1. HEADER */}
-      <div className="flex items-center justify-between mb-5">
+      {/* 1. HEADER (EverSync Dribbble Style Header) */}
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
-            {greeting}, {firstName} {emoji}
+          <h1 className="font-display font-extrabold text-2xl text-text-primary tracking-tight flex items-center gap-2">
+            <span>Let's organize your</span>
+            <span className="px-3 py-0.5 bg-blue-600 text-white rounded-xl font-bold shadow-md shadow-blue-500/30 inline-block">
+              {upcoming.length} {upcoming.length === 1 ? "exam" : "exams"}
+            </span>
+            <span>today!</span>
           </h1>
-          <p className="text-muted text-xs mt-0.5 font-medium">
+          <p className="text-muted text-xs mt-1 font-medium">
             Your exam schedule is looking good.
           </p>
         </div>
-        <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
+        <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-lg shadow-blue-500/25">
           {initials}
         </div>
       </div>
 
-      {/* 2. NEXT EXAM - PRIMARY HERO CARD */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-surface dark:from-amber-500/15 dark:via-orange-500/10 dark:to-transparent border border-orange-500/30 dark:border-orange-500/40 rounded-2xl p-5 mb-5 shadow-xl animate-fadeInUp">
+      {/* 2. NEXT EXAM - PRIMARY HERO CARD (EverSync Hero Card Style) */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden card bg-surface border border-blue-500/20 dark:border-blue-500/30 p-5 mb-6 rounded-3xl shadow-xl"
+      >
         {/* Top Tag & Badge */}
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[11px] font-bold text-orange-600 dark:text-orange-400 bg-orange-500/15 dark:bg-orange-500/20 px-2.5 py-0.5 rounded-full border border-orange-500/30 tracking-wider">
+        <div className="flex items-center justify-between mb-3">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 tracking-wider">
+            <Zap className="w-3 h-3 fill-current" />
             {relativeNextTag} • NEXT EXAM
           </span>
-          <span className="text-xs text-muted font-medium">
+          <span className="text-xs text-muted font-bold font-mono">
             {formatDate(nextExam.exam_date!)}
           </span>
         </div>
 
         {/* Title */}
-        <h2 className="font-display font-bold text-lg text-text-primary leading-snug mb-3">
+        <h2 className="font-display font-extrabold text-lg text-text-primary leading-snug mb-3.5">
           {nextExam.exam_title || "Upcoming Exam"}
         </h2>
 
         {/* Info Grid */}
-        <div className="space-y-1.5 mb-4">
+        <div className="flex items-center gap-3 flex-wrap mb-4">
           {nextExam.reporting_time && (
-            <div className="flex items-center gap-2 text-xs text-text-primary">
-              <ClockIcon className="h-4 w-4 text-orange-500 shrink-0" />
-              <span>Reporting: <strong className="text-text-primary font-semibold">{nextExam.reporting_time}</strong></span>
+            <div className="inline-flex items-center gap-1.5 text-xs text-text-primary font-medium bg-surface border border-stroke px-3 py-1.5 rounded-xl shadow-xs">
+              <Clock className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+              <span>Reporting: <strong className="font-bold">{nextExam.reporting_time}</strong></span>
             </div>
           )}
 
-          <div className="flex items-center gap-2 text-xs text-muted truncate">
-            <MapPinIcon className="h-4 w-4 text-orange-500 shrink-0" />
+          <div className="inline-flex items-center gap-1.5 text-xs text-muted font-medium bg-surface border border-stroke px-3 py-1.5 rounded-xl shadow-xs truncate max-w-full">
+            <MapPin className="h-3.5 w-3.5 text-red-500 shrink-0" />
             <span className="truncate">{getCenterName(nextExam)}</span>
           </div>
         </div>
 
-        {/* Integrated Countdown Box */}
+        {/* Integrated Countdown Box (EverSync Pill Display) */}
         {urgentCountdown && (
-          <div className="bg-surface/90 border border-stroke dark:bg-black/40 dark:border-white/10 p-3 rounded-xl flex items-center justify-between gap-2 mb-4 shadow-sm">
+          <div className="bg-slate-900 text-white dark:bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700 flex items-center justify-between gap-2 mb-4 shadow-inner">
             <div>
-              <p className="text-[10px] uppercase font-bold text-muted tracking-wider">
+              <p className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
                 Time Until Departure
               </p>
-              <p className="font-mono text-xl font-extrabold text-accent tracking-wider">
+              <p className="font-mono text-xl font-extrabold text-blue-400 tracking-wider">
                 {urgentCountdown}
               </p>
             </div>
-            <span className="h-2.5 w-2.5 rounded-full bg-orange-500 animate-ping shrink-0" />
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-ping shrink-0" />
           </div>
         )}
 
-        {/* Primary Hero CTA */}
-        <button
+        {/* Primary Hero CTA Pill Button */}
+        <motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => navigate(`/exam/${nextExam.id}`)}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3.5 px-5 rounded-full shadow-lg shadow-blue-500/30 transition-all flex items-center justify-between"
         >
           <span>View Exam Logistics</span>
-          <ChevronRightIcon className="h-4 w-4" />
-        </button>
-      </div>
+          <div className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <ArrowRight className="h-4 w-4 text-white" />
+          </div>
+        </motion.button>
+      </motion.div>
 
-      {/* 3. QUICK ACTIONS (Apple-Style Compact Tiles) */}
+      {/* 3. QUICK ACTIONS (EverSync Style 2-Column Action Cards) */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">
+        <p className="text-xs font-extrabold text-muted uppercase tracking-wider mb-3">
           Quick Actions
         </p>
-        <div className="grid grid-cols-2 gap-3">
-          <button
+        <div className="grid grid-cols-2 gap-3.5">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📷
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <QrCode className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
-          </button>
-          <button
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Scan Admit Card</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Import in seconds</p>
+            </div>
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/upload")}
-            className="glass overflow-hidden p-3.5 text-left hover:border-accent/50 border border-stroke/60 dark:border-white/10 rounded-2xl transition-all group"
+            className="card bg-surface border border-stroke p-4 text-left rounded-3xl transition-all shadow-md group flex flex-col justify-between"
           >
-            <div className="h-8 w-8 rounded-xl bg-accent/10 flex items-center justify-center text-base mb-2 transition-transform duration-300 group-hover:scale-110 shrink-0">
-              📄
+            <div className="h-10 w-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shrink-0">
+              <FileText className="w-5 h-5" />
             </div>
-            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-[10px] mt-0.5">Auto schedule</p>
-          </button>
+            <div>
+              <p className="font-display font-bold text-sm text-text-primary">Upload Date Sheet</p>
+              <p className="text-muted text-[11px] mt-0.5 font-medium">Auto-create schedule</p>
+            </div>
+          </motion.button>
         </div>
       </div>
 
-      {/* 4. YOUR EXAMS SECTION (Excludes Next Exam - Zero Duplicates!) */}
+      {/* 4. YOUR EXAMS SECTION (Excludes Next Exam - ZERO DUPLICATES!) */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-semibold text-muted uppercase tracking-wider">
+          <p className="text-xs font-extrabold text-muted uppercase tracking-wider">
             Your Exams
           </p>
-          <span className="text-xs text-muted font-medium">
+          <span className="text-xs text-muted font-bold bg-surface border border-stroke px-2.5 py-0.5 rounded-full">
             {upcoming.length} total ({otherUpcoming.length} upcoming)
           </span>
         </div>
@@ -457,40 +517,53 @@ const Home: React.FC = () => {
         {otherUpcoming.length > 0 ? (
           <div className="space-y-4">
             {Array.from(groupedOtherExams.entries()).map(([label, examGroup]) => (
-              <div key={label} className="space-y-2">
-                <p className="text-[11px] font-bold text-accent uppercase tracking-widest px-1">
+              <div key={label} className="space-y-2.5">
+                <p className="text-[11px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest px-1">
                   {label}
                 </p>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {examGroup.map((exam) => (
-                    <button
+                    <motion.button
                       key={exam.id}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
                       onClick={() => navigate(`/exam/${exam.id}`)}
-                      className="w-full text-left glass p-3.5 rounded-2xl border border-stroke/60 dark:border-white/10 hover:border-accent/40 transition-all flex items-center justify-between group"
+                      className="w-full text-left card bg-surface border border-stroke p-4 rounded-3xl hover:border-blue-500/40 transition-all flex items-center justify-between shadow-md group"
                     >
-                      <div className="min-w-0 flex-1 pr-3">
-                        <p className="font-display font-semibold text-sm text-text-primary truncate">
-                          {exam.exam_title || "Upcoming Exam"}
-                        </p>
-                        <div className="flex items-center gap-3 text-xs text-muted mt-1">
-                          {exam.exam_date && <span>{formatDate(exam.exam_date)}</span>}
-                          {exam.reporting_time && (
-                            <span>🕐 {exam.reporting_time}</span>
-                          )}
+                      <div className="flex items-center gap-3.5 min-w-0 flex-1 pr-2">
+                        <div className="h-10 w-10 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                          <Calendar className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-muted truncate mt-0.5">
-                          📍 {getCenterName(exam)}
-                        </p>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-display font-bold text-sm text-text-primary truncate">
+                            {exam.exam_title || "Upcoming Exam"}
+                          </p>
+                          <div className="flex items-center gap-2.5 text-xs text-muted mt-0.5 font-medium">
+                            {exam.exam_date && <span>{formatDate(exam.exam_date)}</span>}
+                            {exam.reporting_time && (
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-blue-500" />
+                                {exam.reporting_time}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted truncate mt-0.5 flex items-center gap-1 font-medium">
+                            <MapPin className="w-3 h-3 text-red-500 shrink-0" />
+                            <span className="truncate">{getCenterName(exam)}</span>
+                          </p>
+                        </div>
                       </div>
-                      <ChevronRightIcon className="h-5 w-5 text-muted group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
-                    </button>
+                      <div className="h-8 w-8 rounded-full bg-stroke/30 dark:bg-white/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
+                        <ChevronRight className="h-4 w-4" />
+                      </div>
+                    </motion.button>
                   ))}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="glass p-4 rounded-2xl border border-stroke/50 text-center text-xs text-muted">
+          <div className="card bg-surface border border-stroke p-4 rounded-3xl text-center text-xs text-muted font-medium">
             No additional upcoming exams scheduled.
           </div>
         )}
@@ -499,7 +572,7 @@ const Home: React.FC = () => {
       {/* 5. RECENTLY COMPLETED EXAMS */}
       {completed.length > 0 && (
         <div className="mb-6">
-          <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">
+          <p className="text-xs font-extrabold text-muted uppercase tracking-wider mb-2.5">
             Recently Completed
           </p>
           <div className="space-y-2">
@@ -507,17 +580,20 @@ const Home: React.FC = () => {
               <button
                 key={exam.id}
                 onClick={() => navigate(`/exam/${exam.id}`)}
-                className="w-full text-left glass p-3 rounded-xl border border-stroke/50 hover:border-accent/40 transition-all flex items-center justify-between"
+                className="w-full text-left card bg-surface border border-stroke p-3.5 rounded-2xl hover:border-blue-500/40 transition-all flex items-center justify-between"
               >
-                <div className="min-w-0 flex-1 pr-2">
-                  <p className="font-medium text-xs text-text-primary truncate">
-                    {exam.exam_title || "Completed Exam"}
-                  </p>
-                  <p className="text-muted text-[11px]">
-                    {exam.exam_date ? formatDate(exam.exam_date) : ""}
-                  </p>
+                <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-xs text-text-primary truncate">
+                      {exam.exam_title || "Completed Exam"}
+                    </p>
+                    <p className="text-muted text-[11px] font-medium">
+                      {exam.exam_date ? formatDate(exam.exam_date) : ""}
+                    </p>
+                  </div>
                 </div>
-                <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                   Completed
                 </span>
               </button>
