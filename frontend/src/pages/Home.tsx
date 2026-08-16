@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { User } from "firebase/auth";
@@ -6,9 +6,9 @@ import { db } from "../services/firebase";
 import { useAuth } from "../contexts/AuthContext";
 import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
-import { MapPinIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { MapPinIcon, ClockIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import relaxingImg from "../assets/relaxing.webp";
-import studyImg from "../assets/study.png";          // ← study illustration
+import studyImg from "../assets/study.png";
 
 // ---------- Types ----------
 interface ExamRecord {
@@ -44,10 +44,10 @@ function isExamCompleted(dateIso: string): boolean {
 
 function daysUntil(dateIso: string): number {
   const now = new Date();
+  now.setHours(0, 0, 0, 0);
   const target = new Date(dateIso);
-  const diff = Math.ceil(
-    (target.setHours(0, 0, 0, 0) - now.setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24)
-  );
+  target.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   return Math.max(0, diff);
 }
 
@@ -60,68 +60,28 @@ function formatDate(dateIso: string) {
   });
 }
 
-function getTimeBasedGreeting(): {
-  greeting: string;
-  question: string;
-  emoji: string;
-} {
+function getRelativeTimeLabel(dateIso: string): string {
+  if (!dateIso) return "UPCOMING";
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const target = new Date(dateIso);
+  target.setHours(0, 0, 0, 0);
+
+  const diffDays = Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "TODAY";
+  if (diffDays === 1) return "TOMORROW";
+  if (diffDays <= 7) return "THIS WEEK";
+  if (diffDays <= 14) return "NEXT WEEK";
+
+  return target.toLocaleDateString("en-US", { month: "long", year: "numeric" }).toUpperCase();
+}
+
+function getTimeBasedGreeting(): { greeting: string; emoji: string } {
   const hour = new Date().getHours();
-  if (hour < 12) {
-    return { greeting: "Good Morning", question: "Let's make today count.", emoji: "☀️" };
-  } else if (hour < 17) {
-    return { greeting: "Good Afternoon", question: "Stay focused, you’re doing great.", emoji: "🌤️" };
-  } else {
-    return { greeting: "Good Evening", question: "Ready for your next exam?", emoji: "👋" };
-  }
+  if (hour < 12) return { greeting: "Good morning", emoji: "☀️" };
+  if (hour < 17) return { greeting: "Good afternoon", emoji: "🌤️" };
+  return { greeting: "Good evening", emoji: "👋" };
 }
-
-function getBorderColor(dateIso: string): string {
-  const days = daysUntil(dateIso);
-  if (days === 0) return "border-l-red-500";
-  if (days === 1) return "border-l-orange-400";
-  return "border-l-blue-500";
-}
-
-// ---------- Progress Ring ----------
-const RADIUS = 30;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-const ProgressRing: React.FC<{ daysLeft: number; totalWindow?: number }> = ({
-  daysLeft,
-  totalWindow = 30,
-}) => {
-  const clamped = Math.max(0, Math.min(daysLeft, totalWindow));
-  const progress = 1 - clamped / totalWindow;
-  const offset = CIRCUMFERENCE * (1 - progress);
-
-  return (
-    <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90">
-      <circle cx="38" cy="38" r={RADIUS} fill="none" stroke="hsl(var(--stroke) / 0.3)" strokeWidth="6" />
-      <circle
-        cx="38"
-        cy="38"
-        r={RADIUS}
-        fill="none"
-        stroke="hsl(var(--accent))"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray={CIRCUMFERENCE}
-        strokeDashoffset={offset}
-        style={{ transition: "stroke-dashoffset 0.6s ease" }}
-      />
-      <text
-        x="38"
-        y="42"
-        textAnchor="middle"
-        transform="rotate(90 38 38)"
-        className="fill-text-primary font-display font-semibold"
-        fontSize="20"
-      >
-        {daysLeft}
-      </text>
-    </svg>
-  );
-};
 
 // ---------- Component ----------
 const Home: React.FC = () => {
@@ -131,7 +91,6 @@ const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { greeting, emoji } = getTimeBasedGreeting();
-  const newUserQuestion = "Let's get your exam schedule ready.";
 
   useEffect(() => {
     if (!user) return;
@@ -159,24 +118,48 @@ const Home: React.FC = () => {
     fetchExams();
   }, [user]);
 
-  const upcoming = exams.filter((e) => e.exam_date && !isExamCompleted(e.exam_date));
-  const completed = exams
-    .filter((e) => e.exam_date && isExamCompleted(e.exam_date))
-    .sort((a, b) => {
-      const dateA = a.exam_date ? new Date(a.exam_date).getTime() : 0;
-      const dateB = b.exam_date ? new Date(b.exam_date).getTime() : 0;
-      return dateB - dateA;
-    });
+  // Chronologically sorted upcoming exams
+  const upcoming = useMemo(() => {
+    return exams
+      .filter((e) => e.exam_date && !isExamCompleted(e.exam_date))
+      .sort((a, b) => new Date(a.exam_date!).getTime() - new Date(b.exam_date!).getTime());
+  }, [exams]);
 
+  // Completed exams
+  const completed = useMemo(() => {
+    return exams
+      .filter((e) => e.exam_date && isExamCompleted(e.exam_date))
+      .sort((a, b) => new Date(b.exam_date!).getTime() - new Date(a.exam_date!).getTime());
+  }, [exams]);
+
+  // NEXT EXAM (Single top upcoming exam ONLY)
   const nextExam = upcoming[0];
-  // Live countdown for the urgent banner — counts down to the departure time
-  // (or reporting time) on the exam day, using the same logic as Success.
+
+  // OTHER EXAMS (Excludes nextExam to ensure NO DUPLICATES anywhere!)
+  const otherUpcoming = useMemo(() => {
+    if (!nextExam) return [];
+    return upcoming.filter((e) => e.id !== nextExam.id);
+  }, [upcoming, nextExam]);
+
+  // Group remaining exams by relative time label
+  const groupedOtherExams = useMemo(() => {
+    const map = new Map<string, ExamRecord[]>();
+    otherUpcoming.forEach((exam) => {
+      const label = getRelativeTimeLabel(exam.exam_date!);
+      if (!map.has(label)) map.set(label, []);
+      map.get(label)!.push(exam);
+    });
+    return map;
+  }, [otherUpcoming]);
+
+  // Live countdown for Next Exam Hero
   const urgentCountdown = useCountdown(
     nextExam?.exam_date,
     nextExam?.safe_departure_time || nextExam?.reporting_time
   );
 
   const userName = (user as User)?.displayName || (user as User)?.email || "User";
+  const firstName = userName.split(" ")[0];
   const initials = userName
     .split(" ")
     .map((part) => part[0])
@@ -194,69 +177,61 @@ const Home: React.FC = () => {
     );
   }
 
-  // ---------- 1. No exams at all (first‑time user) ----------
+  // ---------- 1. No exams at all (First-time User) ----------
   if (exams.length === 0) {
     return (
       <Screen withNav>
-        {/* Greeting + avatar */}
-        <div className="flex items-start justify-between mb-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-semibold text-2xl text-text-primary">
-              {greeting}, {userName.split(" ")[0]} {emoji}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+              {greeting}, {firstName} {emoji}
             </h1>
-            <p className="text-muted text-sm mt-1">{newUserQuestion}</p>
+            <p className="text-muted text-xs mt-0.5 font-medium">
+              Your exam schedule is ready to be created.
+            </p>
           </div>
-          <div className="h-12 w-12 rounded-full bg-accent-gradient flex items-center justify-center font-display font-semibold text-white text-sm shrink-0">
+          <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
             {initials}
           </div>
         </div>
 
-        {/* Hero card with study illustration */}
-        <div className="glass p-4 text-center animate-fadeInUp mb-3">
+        {/* Hero Card */}
+        <div className="glass p-5 text-center animate-fadeInUp mb-4 border border-white/10 rounded-2xl">
           <img
             src={studyImg}
             alt="Student studying"
-            className="w-60 h-45 mx-auto object-contain"
+            className="w-48 h-36 mx-auto object-contain mb-2"
           />
-          <h2 className="font-display font-semibold text-lg text-text-primary mb-2">
+          <h2 className="font-display font-bold text-base text-text-primary mb-1">
             Your exam companion is ready
           </h2>
-          <p className="text-muted text-sm leading-relaxed">
-            Scan your first admit card and we’ll automatically create your complete exam schedule.
+          <p className="text-muted text-xs leading-relaxed max-w-xs mx-auto">
+            Scan your first admit card and we’ll automatically build your complete exam schedule.
           </p>
         </div>
 
-        {/* Why students use Examora */}
-        <div className="grid grid-cols-1 gap-3 mb-6">
-          <div className="glass p-4 flex items-start gap-3 animate-fadeInUp">
-            <div className="text-2xl shrink-0">📄</div>
-            <div>
-              <p className="font-medium text-sm text-text-primary">Auto‑import exams</p>
-              <p className="text-muted text-xs mt-0.5">Never type dates manually.</p>
-            </div>
-          </div>
-          <div className="glass p-4 flex items-start gap-3 animate-fadeInUp">
-            <div className="text-2xl shrink-0">🔔</div>
-            <div>
-              <p className="font-medium text-sm text-text-primary">Smart reminders</p>
-              <p className="text-muted text-xs mt-0.5">Stay prepared before every exam.</p>
-            </div>
-          </div>
-          <div className="glass p-4 flex items-start gap-3 animate-fadeInUp">
-            <div className="text-2xl shrink-0">📍</div>
-            <div>
-              <p className="font-medium text-sm text-text-primary">Admit cards in one place</p>
-              <p className="text-muted text-xs mt-0.5">Everything you need on exam day.</p>
-            </div>
-          </div>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            onClick={() => navigate("/upload")}
+            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+          >
+            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📷</div>
+            <p className="font-display font-semibold text-sm text-text-primary">Scan Admit Card</p>
+            <p className="text-muted text-[11px] mt-0.5">Import exam in seconds</p>
+          </button>
+          <button
+            onClick={() => navigate("/upload")}
+            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
+          >
+            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</div>
+            <p className="font-display font-semibold text-sm text-text-primary">Upload Date Sheet</p>
+            <p className="text-muted text-[11px] mt-0.5">Auto-create schedule</p>
+          </button>
         </div>
 
-        {/* CTA */}
-        <button onClick={() => navigate("/upload")} className="btn-primary w-full">
-          Get Started
-        </button>
-
-        <p className="text-center text-xs italics text-muted mt-8 ">
+        <p className="text-center text-[11px] text-muted mt-8">
           Helping students stay exam-ready.
         </p>
       </Screen>
@@ -267,64 +242,67 @@ const Home: React.FC = () => {
   if (upcoming.length === 0) {
     return (
       <Screen withNav>
-        <div className="mb-6 flex items-start justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="font-display font-semibold text-2xl text-text-primary">
-              {greeting}, {userName.split(" ")[0]} {emoji}
+            <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+              {greeting}, {firstName} {emoji}
             </h1>
-            <p className="text-muted text-sm mt-1">{newUserQuestion}</p>
+            <p className="text-muted text-xs mt-0.5 font-medium">
+              You're all caught up! No upcoming exams.
+            </p>
           </div>
-          <div className="h-12 w-12 rounded-full bg-accent-gradient flex items-center justify-center font-display font-semibold text-white text-sm shrink-0">
+          <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
             {initials}
           </div>
         </div>
 
-        <div className="glass p-8 text-center animate-fadeInUp mb-6">
+        <div className="glass p-6 text-center animate-fadeInUp mb-5 border border-white/10 rounded-2xl">
           <img
             src={relaxingImg}
             alt="Student relaxing"
-            className="w-50 h-50 mx-auto mb-5 object-contain"
+            className="w-40 h-40 mx-auto mb-3 object-contain"
           />
-          <h2 className="font-display font-semibold text-lg text-text-primary mb-2">
-            You're all caught up!
+          <h2 className="font-display font-bold text-base text-text-primary mb-1">
+            All caught up!
           </h2>
-          <p className="text-muted text-sm leading-relaxed">
-            Take a break. We'll notify you when a new exam appears.
+          <p className="text-muted text-xs leading-relaxed max-w-xs mx-auto">
+            Take a break. We'll notify you when a new exam is scheduled.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-5 text-left hover:border-accent/40 border border-transparent transition-colors animate-fadeInUp"
+            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
           >
-            <div className="text-2xl mb-3">📷</div>
-            <p className="font-display font-medium text-sm text-text-primary">Scan Admit Card</p>
-            <p className="text-muted text-xs mt-1">Import exam in 10 sec</p>
+            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📷</div>
+            <p className="font-display font-semibold text-sm text-text-primary">Scan Admit Card</p>
+            <p className="text-muted text-[11px] mt-0.5">Import exam in seconds</p>
           </button>
           <button
             onClick={() => navigate("/upload")}
-            className="glass p-5 text-left hover:border-accent/40 border border-transparent transition-colors animate-fadeInUp"
+            className="glass p-4 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all animate-fadeInUp group"
           >
-            <div className="text-2xl mb-3">📄</div>
-            <p className="font-display font-medium text-sm text-text-primary">Upload Date Sheet</p>
-            <p className="text-muted text-xs mt-1">Auto-create your schedule</p>
+            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</div>
+            <p className="font-display font-semibold text-sm text-text-primary">Upload Date Sheet</p>
+            <p className="text-muted text-[11px] mt-0.5">Auto-create schedule</p>
           </button>
         </div>
 
         {completed.length > 0 && (
           <div className="mb-6">
-            <h2 className="font-display font-semibold text-sm text-text-primary mb-3 uppercase tracking-wide">
-              Recently completed
+            <h2 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+              Recently Completed
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {completed.slice(0, 3).map((exam) => (
                 <button
                   key={exam.id}
                   onClick={() => navigate(`/exam/${exam.id}`)}
-                  className="w-full text-left glass p-4 animate-fadeInUp flex items-center gap-3"
+                  className="w-full text-left glass p-3.5 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-between"
                 >
-                  <span className="text-xl shrink-0">📄</span>
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-sm text-text-primary truncate">
                       {exam.exam_title || "Exam"}
@@ -333,172 +311,208 @@ const Home: React.FC = () => {
                       {exam.exam_date ? formatDate(exam.exam_date) : ""}
                     </p>
                   </div>
-                  <span className="badge !bg-success/10 !text-success !border-success/20 shrink-0">
+                  <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                     Completed
                   </span>
                 </button>
               ))}
             </div>
-            {completed.length > 3 && (
-              <button
-                onClick={() => navigate("/exams")}
-                className="text-accent text-sm mt-3 hover:underline"
-              >
-                View all completed exams
-              </button>
-            )}
           </div>
         )}
-
-        <p className="text-center text-xs text-muted mt-8">
-          Every exam completed is one step closer.
-        </p>
       </Screen>
     );
   }
 
-  // ---------- 3. Upcoming exams exist ----------
+  // ---------- 3. Upcoming Exams Exist ----------
+  const daysUntilNext = daysUntil(nextExam.exam_date!);
+  const relativeNextTag =
+    daysUntilNext === 0
+      ? "TODAY"
+      : daysUntilNext === 1
+      ? "TOMORROW"
+      : getRelativeTimeLabel(nextExam.exam_date!);
+
   return (
     <Screen withNav>
-      <div className="mb-6 flex items-start justify-between">
+      {/* 1. HEADER */}
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="font-display font-semibold text-2xl text-text-primary">
-            {greeting}, {userName.split(" ")[0]} {emoji}
+          <h1 className="font-display font-bold text-xl text-text-primary tracking-tight">
+            {greeting}, {firstName} {emoji}
           </h1>
-          <p className="text-muted text-sm mt-1">{newUserQuestion}</p>
+          <p className="text-muted text-xs mt-0.5 font-medium">
+            Your exam schedule is looking good.
+          </p>
         </div>
-        <div className="h-12 w-12 rounded-full bg-accent-gradient flex items-center justify-center font-display font-semibold text-white text-sm shrink-0">
+        <div className="h-10 w-10 rounded-full bg-accent-gradient flex items-center justify-center font-display font-bold text-white text-xs shrink-0 shadow-md">
           {initials}
         </div>
       </div>
 
-      {nextExam && daysUntil(nextExam.exam_date!) <= 1 && (
-        <div className="glass p-5 mb-6 animate-fadeInUp">
-          <span className="badge mb-3">
-            {daysUntil(nextExam.exam_date!) === 0 ? "Today" : "Tomorrow"}
+      {/* 2. NEXT EXAM - PRIMARY HERO CARD */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent border border-orange-500/30 rounded-2xl p-5 mb-5 shadow-xl animate-fadeInUp">
+        {/* Top Tag & Badge */}
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-[11px] font-bold text-orange-400 bg-orange-500/20 px-2.5 py-0.5 rounded-full border border-orange-500/30 tracking-wider">
+            {relativeNextTag} • NEXT EXAM
           </span>
-          <h3 className="font-display font-semibold text-lg text-text-primary leading-snug truncate">
-            {nextExam.exam_title || "Exam"}
-          </h3>
+          <span className="text-xs text-muted font-medium">
+            {formatDate(nextExam.exam_date!)}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h2 className="font-display font-bold text-lg text-white leading-snug mb-3">
+          {nextExam.exam_title || "Upcoming Exam"}
+        </h2>
+
+        {/* Info Grid */}
+        <div className="space-y-1.5 mb-4">
           {nextExam.reporting_time && (
-            <div className="flex items-center gap-1.5 text-muted text-sm mt-1.5">
-              <ClockIcon className="h-4 w-4 shrink-0" />
-              <span>Reports {nextExam.reporting_time}</span>
+            <div className="flex items-center gap-2 text-xs text-text-primary/90">
+              <ClockIcon className="h-4 w-4 text-orange-400 shrink-0" />
+              <span>Reporting: <strong className="text-white">{nextExam.reporting_time}</strong></span>
             </div>
           )}
-          <p className="font-display text-2xl text-accent tracking-wider mt-3 tabular-nums">
-            {urgentCountdown}
-          </p>
-        </div>
-      )}
 
-      {nextExam && (
+          <div className="flex items-center gap-2 text-xs text-muted truncate">
+            <MapPinIcon className="h-4 w-4 text-orange-400 shrink-0" />
+            <span className="truncate">{getCenterName(nextExam)}</span>
+          </div>
+        </div>
+
+        {/* Integrated Countdown Box */}
+        {urgentCountdown && (
+          <div className="bg-black/40 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center justify-between gap-2 mb-4">
+            <div>
+              <p className="text-[10px] uppercase font-bold text-muted tracking-wider">
+                Time Until Departure
+              </p>
+              <p className="font-mono text-xl font-extrabold text-orange-400 tracking-wider">
+                {urgentCountdown}
+              </p>
+            </div>
+            <span className="h-2 w-2 rounded-full bg-orange-500 animate-ping shrink-0" />
+          </div>
+        )}
+
+        {/* Primary Hero CTA */}
         <button
           onClick={() => navigate(`/exam/${nextExam.id}`)}
-          className={`w-full text-left glass p-6 animate-fadeInUp mb-6 border-l-4 ${getBorderColor(
-            nextExam.exam_date!
-          )}`}
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs py-2.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5"
         >
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <span className="badge mb-3">
-                {daysUntil(nextExam.exam_date!) === 0
-                  ? "Today"
-                  : `${daysUntil(nextExam.exam_date!)} day${
-                      daysUntil(nextExam.exam_date!) === 1 ? "" : "s"
-                    } to go`}
-              </span>
-              <h3 className="font-display font-semibold text-lg text-text-primary leading-snug truncate">
-                {nextExam.exam_title || "Exam"}
-              </h3>
-
-              <div className="flex items-center gap-1.5 text-muted text-sm mt-1.5">
-                <ClockIcon className="h-4 w-4 shrink-0" />
-                <span>
-                  {nextExam.exam_date ? formatDate(nextExam.exam_date) : ""}
-                  {nextExam.reporting_time && <> · Reports {nextExam.reporting_time}</>}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1.5 text-muted text-sm truncate mt-1">
-                <MapPinIcon className="h-4 w-4 shrink-0" />
-                <span>{getCenterName(nextExam)}</span>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-stroke/20 space-y-1">
-                <div className="flex items-center gap-2 text-xs text-muted">
-                  <span className="text-green-400">✓</span> Admit Card Ready
-                </div>
-                <div className="flex items-center gap-2 text-xs text-muted">
-                  <span className="text-green-400">✓</span> Centre Saved
-                </div>
-              </div>
-            </div>
-            <ProgressRing daysLeft={daysUntil(nextExam.exam_date!)} />
-          </div>
-        </button>
-      )}
-
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <button
-          onClick={() => navigate("/upload")}
-          className="glass p-5 text-left hover:border-accent/40 border border-transparent transition-colors animate-fadeInUp"
-        >
-          <div className="text-2xl mb-3">📷</div>
-          <p className="font-display font-medium text-sm text-text-primary">Scan Admit Card</p>
-          <p className="text-muted text-xs mt-1">Import exam in 10 sec</p>
-        </button>
-        <button
-          onClick={() => navigate("/upload")}
-          className="glass p-5 text-left hover:border-accent/40 border border-transparent transition-colors animate-fadeInUp"
-        >
-          <div className="text-2xl mb-3">📄</div>
-          <p className="font-display font-medium text-sm text-text-primary">Upload Date Sheet</p>
-          <p className="text-muted text-xs mt-1">Auto-create your schedule</p>
+          <span>View Exam Logistics</span>
+          <ChevronRightIcon className="h-4 w-4" />
         </button>
       </div>
 
+      {/* 3. QUICK ACTIONS (Apple-Style Compact Tiles) */}
+      <div className="mb-6">
+        <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">
+          Quick Actions
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => navigate("/upload")}
+            className="glass p-3.5 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all group"
+          >
+            <div className="text-xl mb-1.5 group-hover:scale-110 transition-transform">📷</div>
+            <p className="font-display font-semibold text-xs text-text-primary">Scan Admit Card</p>
+            <p className="text-muted text-[10px] mt-0.5">Import in seconds</p>
+          </button>
+          <button
+            onClick={() => navigate("/upload")}
+            className="glass p-3.5 text-left hover:border-accent/40 border border-white/10 rounded-2xl transition-all group"
+          >
+            <div className="text-xl mb-1.5 group-hover:scale-110 transition-transform">📄</div>
+            <p className="font-display font-semibold text-xs text-text-primary">Upload Date Sheet</p>
+            <p className="text-muted text-[10px] mt-0.5">Auto schedule</p>
+          </button>
+        </div>
+      </div>
+
+      {/* 4. YOUR EXAMS SECTION (Excludes Next Exam - Zero Duplicates!) */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold text-muted uppercase tracking-wider">
+            Your Exams
+          </p>
+          <span className="text-xs text-muted font-medium">
+            {upcoming.length} total ({otherUpcoming.length} upcoming)
+          </span>
+        </div>
+
+        {otherUpcoming.length > 0 ? (
+          <div className="space-y-4">
+            {Array.from(groupedOtherExams.entries()).map(([label, examGroup]) => (
+              <div key={label} className="space-y-2">
+                <p className="text-[11px] font-bold text-accent/80 uppercase tracking-widest px-1">
+                  {label}
+                </p>
+                <div className="space-y-2">
+                  {examGroup.map((exam) => (
+                    <button
+                      key={exam.id}
+                      onClick={() => navigate(`/exam/${exam.id}`)}
+                      className="w-full text-left glass p-3.5 rounded-2xl border border-white/10 hover:border-accent/40 transition-all flex items-center justify-between group"
+                    >
+                      <div className="min-w-0 flex-1 pr-3">
+                        <p className="font-display font-semibold text-sm text-text-primary truncate">
+                          {exam.exam_title || "Upcoming Exam"}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-muted mt-1">
+                          {exam.exam_date && <span>{formatDate(exam.exam_date)}</span>}
+                          {exam.reporting_time && (
+                            <span>🕐 {exam.reporting_time}</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted/80 truncate mt-0.5">
+                          📍 {getCenterName(exam)}
+                        </p>
+                      </div>
+                      <ChevronRightIcon className="h-5 w-5 text-muted group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass p-4 rounded-2xl border border-white/5 text-center text-xs text-muted">
+            No additional upcoming exams scheduled.
+          </div>
+        )}
+      </div>
+
+      {/* 5. RECENTLY COMPLETED EXAMS */}
       {completed.length > 0 && (
         <div className="mb-6">
-          <h2 className="font-display font-semibold text-sm text-text-primary mb-3 uppercase tracking-wide">
-            Recently completed
-          </h2>
-          <div className="space-y-3">
+          <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5">
+            Recently Completed
+          </p>
+          <div className="space-y-2">
             {completed.slice(0, 3).map((exam) => (
               <button
                 key={exam.id}
                 onClick={() => navigate(`/exam/${exam.id}`)}
-                className="w-full text-left glass p-4 animate-fadeInUp flex items-center gap-3"
+                className="w-full text-left glass p-3 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-center justify-between"
               >
-                <span className="text-xl shrink-0">📄</span>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium text-sm text-text-primary truncate">
-                    {exam.exam_title || "Exam"}
+                <div className="min-w-0 flex-1 pr-2">
+                  <p className="font-medium text-xs text-text-primary truncate">
+                    {exam.exam_title || "Completed Exam"}
                   </p>
-                  <p className="text-muted text-xs">
+                  <p className="text-muted text-[11px]">
                     {exam.exam_date ? formatDate(exam.exam_date) : ""}
                   </p>
                 </div>
-                <span className="badge !bg-success/10 !text-success !border-success/20 shrink-0">
+                <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
                   Completed
                 </span>
               </button>
             ))}
           </div>
-          {completed.length > 3 && (
-            <button
-              onClick={() => navigate("/exams")}
-              className="text-accent text-sm mt-3 hover:underline"
-            >
-              View all completed exams
-            </button>
-          )}
         </div>
       )}
-
-      <p className="text-center text-xs text-muted mt-8">
-        Every exam completed is one step closer.
-      </p>
     </Screen>
   );
 };
