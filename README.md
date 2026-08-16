@@ -10,7 +10,6 @@ Examora is a premium consumer web application built to eliminate exam-day anxiet
 - 🕒 **Chronos Travel Assistant**: Displays your exact recommended departure time, estimated travel duration, safety buffer status, and an interactive *"What if you leave later?"* departure simulator.
 - 📡 **Live Geofence & Proximity Tracker**: Tracks your real-time GPS location relative to your test centre using Haversine distance math with road curvature adjustment, triggering alerts when inside the 2.0 km geofence zone.
 - 📅 **1-Tap Google Calendar Sync**: Generates structured Google Calendar events pre-populated with reporting times, departure warnings, required document checklists, and direct Google Maps navigation links.
-- 🎨 **Apple-Grade Consumer UI**: Built with SF Pro typography, harmonious light/dark themes, restraint-driven visual hierarchy, zero duplicate exam cards, and vector icon design.
 
 ---
 
