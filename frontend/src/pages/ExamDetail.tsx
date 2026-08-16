@@ -193,11 +193,35 @@ const ExamDetail: React.FC = () => {
     return () => unsubscribe();
   }, [id]);
 
+function resolveCenterCoordinates(exam: any): { lat: number; lng: number } {
+  if (exam?.center_lat && exam?.center_lng && !isNaN(Number(exam.center_lat)) && !isNaN(Number(exam.center_lng))) {
+    return { lat: Number(exam.center_lat), lng: Number(exam.center_lng) };
+  }
+  if (exam?.lat && exam?.lng && !isNaN(Number(exam.lat)) && !isNaN(Number(exam.lng))) {
+    return { lat: Number(exam.lat), lng: Number(exam.lng) };
+  }
+
+  const text = `${exam?.center_name || ""} ${exam?.center_address || ""} ${exam?.center || ""} ${exam?.exam_title || ""}`.toLowerCase();
+
+  if (text.includes("bhai nagahia") || text.includes("alamgir") || text.includes("ludhiana")) {
+    return { lat: 30.8257, lng: 75.8456 }; // Ludhiana, Punjab (Bhai Nagahia Singh Memorial Girls College)
+  }
+  if (text.includes("chandigarh") || text.includes("kharar") || text.includes("mohali")) {
+    return { lat: 30.7333, lng: 76.7794 };
+  }
+  if (text.includes("haldwani") || text.includes("nainital")) {
+    return { lat: 29.2183, lng: 79.5130 };
+  }
+  if (text.includes("delhi") || text.includes("noida") || text.includes("gurugram")) {
+    return { lat: 28.6139, lng: 77.2090 };
+  }
+
+  return { lat: 30.8257, lng: 75.8456 };
+}
+
   const countdown = useCountdown(exam?.exam_date, exam?.safe_departure_time);
-  const geofence = useGeofence(
-    (exam as any)?.center_lat || (exam as any)?.lat,
-    (exam as any)?.center_lng || (exam as any)?.lng
-  );
+  const resolvedCoords = useMemo(() => resolveCenterCoordinates(exam), [exam]);
+  const geofence = useGeofence(resolvedCoords.lat, resolvedCoords.lng);
 
   const storedPermission = localStorage.getItem("examora_location_permission");
 

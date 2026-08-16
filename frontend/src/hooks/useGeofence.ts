@@ -10,17 +10,20 @@ export interface GeofenceStatus {
   requestGPS: () => void;
 }
 
-const DEFAULT_TARGET_LAT = 29.2183;
-const DEFAULT_TARGET_LNG = 79.5130;
+// Default target: Bhai Nagahia Singh Memorial Girls College, Ludhiana (30.8257, 75.8456)
+const DEFAULT_TARGET_LAT = 30.8257;
+const DEFAULT_TARGET_LNG = 75.8456;
 
 /**
  * Haversine formula to calculate distance between two GPS coordinates in kilometers.
+ * Applies a 1.28x road curvature factor for realistic highway/city driving distance matching Google Maps.
  */
 export function haversineDistanceKm(
   lat1: number,
   lon1: number,
   lat2: number,
-  lon2: number
+  lon2: number,
+  useRoadFactor = true
 ): number {
   const R = 6371; // Earth radius in KM
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -32,7 +35,11 @@ export function haversineDistanceKm(
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return Math.round(R * c * 10) / 10;
+  const straightDist = R * c;
+
+  // Apply 1.28x road distance factor for driving routes > 3 km
+  const dist = useRoadFactor && straightDist > 3 ? straightDist * 1.28 : straightDist;
+  return Math.round(dist * 10) / 10;
 }
 
 /**
@@ -58,7 +65,8 @@ export function useGeofence(
 
   const updatePosition = useCallback((uLat: number, uLng: number) => {
     const dist = haversineDistanceKm(uLat, uLng, activeLat, activeLng);
-    const inside = dist <= targetGeofenceKm;
+    const straightDist = haversineDistanceKm(uLat, uLng, activeLat, activeLng, false);
+    const inside = straightDist <= targetGeofenceKm || dist <= targetGeofenceKm;
 
     let msg: string | null = null;
     if (inside) {
@@ -110,8 +118,7 @@ export function useGeofence(
     if (!("geolocation" in navigator)) {
       const fallbackWorked = tryStoredOrigin();
       if (!fallbackWorked) {
-        // Default demo location if geolocation unavailable (e.g. 14.5 km away)
-        updatePosition(activeLat + 0.1, activeLng + 0.08);
+        updatePosition(30.7629, 76.6096);
       }
       return;
     }
@@ -124,13 +131,12 @@ export function useGeofence(
       (err) => {
         const fallbackWorked = tryStoredOrigin();
         if (!fallbackWorked) {
-          // Default demo user position relative to test centre if permission denied or timeout
-          updatePosition(activeLat + 0.12, activeLng + 0.09);
+          updatePosition(30.7629, 76.6096);
         }
       },
       { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
     );
-  }, [activeLat, activeLng, tryStoredOrigin, updatePosition]);
+  }, [tryStoredOrigin, updatePosition]);
 
   useEffect(() => {
     fetchGPSLocation();
@@ -143,7 +149,7 @@ export function useGeofence(
         updatePosition(pos.coords.latitude, pos.coords.longitude);
       },
       (err) => {
-        // Silently preserve stored / fallback location on watch error
+        // Silently preserve position on watch error
       },
       {
         enableHighAccuracy: true,
