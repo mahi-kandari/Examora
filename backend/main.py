@@ -2,13 +2,12 @@ import math
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-# Load backend/.env before importing project modules that read configuration.
-# ``load_dotenv()`` alone searches from the process working directory, which
-# can be the repository root or a deployment directory rather than backend/.
-load_dotenv()
-load_dotenv(Path(__file__).resolve().parent / ".env")
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    load_dotenv(Path(__file__).resolve().parent / ".env")
+except ImportError:
+    pass
 
 import logging
 from datetime import datetime
