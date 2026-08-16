@@ -14,7 +14,8 @@ import { Line } from "react-chartjs-2";
 import { db } from "../services/firebase";
 import Screen from "../components/Screen";
 import { useCountdown } from "../hooks/useCountdown";
-import { generateGoogleCalendarUrl, downloadIcsFile } from "../utils/calendar";
+import { useGeofence } from "../hooks/useGeofence";
+import { generateGoogleCalendarUrl } from "../utils/calendar";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -191,6 +192,10 @@ const ExamDetail: React.FC = () => {
   }, [id]);
 
   const countdown = useCountdown(exam?.exam_date, exam?.safe_departure_time);
+  const geofence = useGeofence(
+    (exam as any)?.center_lat || (exam as any)?.lat,
+    (exam as any)?.center_lng || (exam as any)?.lng
+  );
 
   const storedPermission = localStorage.getItem("examora_location_permission");
 
@@ -519,6 +524,48 @@ const ExamDetail: React.FC = () => {
       </div>
 
       <div className="card mt-4 animate-fadeInUp">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-medium text-muted uppercase tracking-wide">
+            Geofence & Proximity Tracker
+          </p>
+          {geofence.isWithinGeofence ? (
+            <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30 animate-pulse">
+              Inside 2.0 km Geofence
+            </span>
+          ) : (
+            <span className="text-[11px] font-medium text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full border border-blue-500/20">
+              Live GPS Active
+            </span>
+          )}
+        </div>
+
+        {geofence.distanceKm !== null ? (
+          <div className="mt-2">
+            <p className="text-sm font-semibold text-text-primary">
+              {geofence.isWithinGeofence ? (
+                <span className="text-emerald-400">
+                  📍 You are {geofence.distanceKm} km from your test centre!
+                </span>
+              ) : (
+                <span>🚗 {geofence.distanceKm} km away from test centre</span>
+              )}
+            </p>
+            <p className="text-xs text-muted mt-1 leading-relaxed">
+              {geofence.isWithinGeofence
+                ? "You are inside the 2.0 km geofence zone. Have your Admit Card, Original Photo ID, and required items ready at the gate!"
+                : "Geofence notifications trigger automatically when you arrive within 2.0 km of the test centre."}
+            </p>
+          </div>
+        ) : (
+          <p className="text-xs text-muted mt-2">
+            {geofence.error
+              ? `GPS Status: ${geofence.error}`
+              : "Acquiring live GPS location to calculate distance to test centre..."}
+          </p>
+        )}
+      </div>
+
+      <div className="card mt-4 animate-fadeInUp">
         <p className="text-xs font-medium text-muted uppercase tracking-wide mb-2">Centre</p>
         <p className="text-text-primary text-sm font-medium">{centreDisplayName}</p>
         <p className="text-muted text-sm mt-1">{exam.center_address || ""}</p>
@@ -541,22 +588,14 @@ const ExamDetail: React.FC = () => {
         <p className="text-xs font-medium text-muted uppercase tracking-wide mb-3">
           Calendar & Event Sync
         </p>
-        <div className="flex flex-col sm:flex-row gap-2.5">
-          <a
-            href={generateGoogleCalendarUrl(exam)}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-primary flex-1 text-center block !py-2.5 text-sm font-medium"
-          >
-            📅 Add to Google Calendar
-          </a>
-          <button
-            onClick={() => downloadIcsFile(exam)}
-            className="btn-ghost flex-1 text-center block !py-2.5 text-sm font-medium"
-          >
-            📥 Export .ics Calendar
-          </button>
-        </div>
+        <a
+          href={generateGoogleCalendarUrl(exam)}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-primary w-full text-center block !py-2.5 text-sm font-medium"
+        >
+          📅 Add to Google Calendar
+        </a>
       </div>
 
       <div className="card mt-4 animate-fadeInUp">
