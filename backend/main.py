@@ -45,21 +45,38 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Firebase must be ready before the notification scheduler can send FCM pushes.
+# Firebase initialization
 firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
-if not firebase_credentials:
-    raise RuntimeError(
-        "FIREBASE_CREDENTIALS is required and must point to a Firebase "
-        "service-account JSON file."
-    )
-
 if not firebase_admin._apps:
-    firebase_admin.initialize_app(
-        credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
-    )
+    cred = None
+    if firebase_credentials:
+        if os.path.exists(firebase_credentials):
+            cred = credentials.Certificate(firebase_credentials)
+        elif (BASE_DIR / firebase_credentials).exists():
+            cred = credentials.Certificate(str(BASE_DIR / firebase_credentials))
+        else:
+            try:
+                import json
+                cred_dict = json.loads(firebase_credentials)
+                cred = credentials.Certificate(cred_dict)
+            except Exception:
+                logger.warning("Could not parse FIREBASE_CREDENTIALS JSON string")
+    
+    if cred:
+        firebase_admin.initialize_app(cred)
+    else:
+        try:
+            firebase_admin.initialize_app()
+        except Exception as err:
+            logger.warning(f"Default Firebase initialization: {err}")
 
-db = firestore.client()
-exams_collection = db.collection("exams")
+try:
+    db = firestore.client()
+    exams_collection = db.collection("exams")
+except Exception as e:
+    logger.warning(f"Firestore client initialization: {e}")
+    db = None
+    exams_collection = None
 
 # ------------------------------
 # FastAPI app
